@@ -426,7 +426,7 @@
       </div>
       <div id="sidebar-content">
         <ul id="sidebar-links">
-          <li class="status-msg"><span class="spinner">⏳</span> Scanning...</li>
+          <li class="status-msg"><span class="spinner">⏳</span> Loading...</li>
         </ul>
       </div>
     </nav>
@@ -452,6 +452,7 @@
     const repo = 'proxynoxy.github.io';
     const SITE_PASSWORD = 'proxynoxy';
     const AUTH_KEY = 'proxynoxy_authenticated';
+    const STATIC_HTML_FILES = ['CloudMoon.html'];
 
     const appEl = document.getElementById('app');
     const authScreen = document.getElementById('auth-screen');
@@ -543,82 +544,35 @@
       }
     }
 
-    async function loadSidebar() {
+    function buildSidebar() {
       const sidebarEl = document.getElementById('sidebar-links');
+      sidebarEl.innerHTML = '';
 
-      try {
-        const branches = ['main', 'master'];
-        let tree = null;
-        let lastError = null;
+      if (!STATIC_HTML_FILES.length) {
+        sidebarEl.innerHTML = '<li class="status-msg">📭 No HTML pages configured</li>';
+        return;
+      }
 
-        for (const branch of branches) {
-          try {
-            const url = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
-            const response = await fetch(url, { 
-              headers: { 
-                'Accept': 'application/vnd.github+json',
-                'Cache-Control': 'no-cache'
-              },
-              timeout: 10000
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              tree = data.tree || [];
-              break;
-            } else if (response.status === 404) {
-              lastError = `Branch ${branch} not found`;
-              continue;
-            } else if (response.status === 403) {
-              lastError = 'API rate limit reached. Please try again later.';
-              break;
-            } else {
-              lastError = `HTTP ${response.status}`;
-              continue;
-            }
-          } catch (err) {
-            lastError = err.message;
-            continue;
-          }
-        }
-
-        if (!tree) {
-          throw new Error(lastError || 'Could not load repository file tree.');
-        }
-
-        sidebarEl.innerHTML = '';
-
-        const htmlFiles = tree
-          .filter(file => file.path && file.path.toLowerCase().endsWith('.html'))
-          .filter(file => file.path.toLowerCase() !== 'index.html')
-          .sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true, sensitivity: 'base' }));
-
-        if (htmlFiles.length === 0) {
-          sidebarEl.innerHTML = '<li class="status-msg">📭 No projects found</li>';
-          return;
-        }
-
-        htmlFiles.forEach(file => {
+      STATIC_HTML_FILES
+        .filter(file => file && file.toLowerCase().endsWith('.html'))
+        .sort((a, b) => a.localeCompare(b))
+        .forEach(file => {
           const item = document.createElement('li');
           const link = document.createElement('a');
 
           link.href = '#';
-          link.dataset.path = file.path;
-          link.textContent = formatLabel(file.path);
+          link.dataset.path = file;
+          link.textContent = formatLabel(file);
           link.addEventListener('click', event => {
             event.preventDefault();
-            openPage(file.path);
+            openPage(file);
           });
 
           item.appendChild(link);
           sidebarEl.appendChild(item);
         });
 
-        openPage(htmlFiles[0].path);
-      } catch (error) {
-        console.error('Error fetching repository files:', error);
-        sidebarEl.innerHTML = `<li class="status-msg">❌ ${error.message || 'Error loading projects'}</li>`;
-      }
+      openPage(STATIC_HTML_FILES[0]);
     }
 
     authForm.addEventListener('submit', function (event) {
@@ -653,7 +607,7 @@
       } else {
         lockApp();
       }
-      loadSidebar();
+      buildSidebar();
       if (!isAuthenticated()) {
         passwordInput.focus();
       }
