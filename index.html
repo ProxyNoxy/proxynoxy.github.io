@@ -25,6 +25,9 @@
       --accent: #ec4899;
       --success: #10b981;
       --warning: #f59e0b;
+      --danger: #ef4444;
+      --panel: rgba(15, 23, 42, 0.85);
+      --panel-soft: rgba(30, 41, 59, 0.88);
     }
 
     html, body {
@@ -39,6 +42,20 @@
       color: var(--text-primary);
       display: flex;
       flex-direction: row;
+    }
+
+    #app {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    #app.unlocked {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     #sidebar {
@@ -168,6 +185,7 @@
       align-items: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
     #main-header-content h1 {
@@ -183,7 +201,16 @@
       font-size: 0.9rem;
     }
 
-    #fullscreen-btn {
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .header-btn,
+    #auth-form button,
+    .modal-actions button {
       appearance: none;
       border: 1px solid rgba(99, 102, 241, 0.7);
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(236, 72, 153, 0.12) 100%);
@@ -197,7 +224,15 @@
       white-space: nowrap;
     }
 
-    #fullscreen-btn:hover {
+    .header-btn.secondary,
+    .modal-actions .secondary {
+      background: rgba(148, 163, 184, 0.08);
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    .header-btn:hover,
+    #auth-form button:hover,
+    .modal-actions button:hover {
       transform: translateY(-1px);
       box-shadow: 0 6px 18px rgba(99, 102, 241, 0.2);
       border-color: var(--primary-light);
@@ -210,6 +245,176 @@
       border: none;
       background: var(--bg-dark);
       overflow: hidden;
+    }
+
+    #auth-screen {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(99, 102, 241, 0.18), rgba(15, 23, 42, 0.92)),
+                  linear-gradient(135deg, #020817 0%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.25s ease;
+    }
+
+    #auth-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #auth-card {
+      width: min(420px, calc(100vw - 2rem));
+      background: var(--panel);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      padding: 2rem;
+    }
+
+    #auth-card h2 {
+      margin: 0 0 0.35rem 0;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+    }
+
+    #auth-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    #auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    #auth-form label {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    #auth-form input {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-primary);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #auth-form input:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+    }
+
+    #auth-form button {
+      margin-top: 0.35rem;
+      font-size: 1rem;
+    }
+
+    #auth-error {
+      min-height: 1.1rem;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    #auth-error.visible {
+      opacity: 1;
+    }
+
+    #auth-change-link {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    #auth-change-link button {
+      background: transparent;
+      border: none;
+      color: var(--primary-light);
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 6, 23, 0.7);
+      z-index: 2000;
+      padding: 1rem;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(480px, calc(100vw - 2rem));
+      background: var(--panel-soft);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-card h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .modal-form label {
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .modal-form input {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-primary);
+      border-radius: 10px;
+      padding: 0.8rem 0.9rem;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .modal-form input:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .inline-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
     }
 
     @media (max-width: 1024px) {
@@ -228,6 +433,10 @@
 
     @media (max-width: 768px) {
       body {
+        flex-direction: column;
+      }
+
+      #app {
         flex-direction: column;
       }
 
@@ -251,6 +460,10 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+      }
+
+      .auth-actions {
+        width: 100%;
       }
     }
 
@@ -286,32 +499,168 @@
   </style>
 </head>
 <body>
-  <nav id="sidebar">
-    <div id="sidebar-header">
-      <h1>📚 Projects</h1>
-      <p>Your HTML Pages</p>
-    </div>
-    <div id="sidebar-content">
-      <ul id="sidebar-links">
-        <li class="status-msg"><span class="spinner">⏳</span> Scanning...</li>
-      </ul>
-    </div>
-  </nav>
+  <div id="auth-screen">
+    <div id="auth-card">
+      <h2 id="auth-title">Access required</h2>
+      <p id="auth-subtitle">Enter the password to view the project pages.</p>
 
-  <div id="main-container">
-    <header id="main-header">
-      <div id="main-header-content">
-        <h1 id="page-title">Welcome to ProxyNoxy</h1>
-        <p id="page-path">Select a project from the sidebar</p>
+      <form id="auth-form">
+        <label for="password-input">Password</label>
+        <input id="password-input" type="password" autocomplete="current-password" placeholder="Enter password" />
+        <div id="auth-error" aria-live="polite"></div>
+        <button type="submit">Unlock</button>
+      </form>
+
+      <div id="auth-change-link">
+        <button type="button" id="open-password-settings">Change password</button>
       </div>
-      <button id="fullscreen-btn" type="button" aria-label="Toggle fullscreen">⛶ Fullscreen</button>
-    </header>
-    <iframe id="page-frame" title="Project Preview"></iframe>
+    </div>
+  </div>
+
+  <div id="app">
+    <nav id="sidebar">
+      <div id="sidebar-header">
+        <h1>📚 Projects</h1>
+        <p>Your HTML Pages</p>
+      </div>
+      <div id="sidebar-content">
+        <ul id="sidebar-links">
+          <li class="status-msg"><span class="spinner">⏳</span> Scanning...</li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="main-container">
+      <header id="main-header">
+        <div id="main-header-content">
+          <h1 id="page-title">Welcome to ProxyNoxy</h1>
+          <p id="page-path">Select a project from the sidebar</p>
+        </div>
+
+        <div class="header-actions">
+          <button class="header-btn" type="button" id="fullscreen-btn">⛶ Fullscreen</button>
+          <button class="header-btn secondary" type="button" id="lock-btn">🔒 Lock</button>
+          <button class="header-btn secondary" type="button" id="change-password-btn">🔐 Change Password</button>
+        </div>
+      </header>
+      <iframe id="page-frame" title="Project Preview"></iframe>
+    </div>
+  </div>
+
+  <div id="password-modal" class="modal" aria-modal="true" role="dialog" aria-labelledby="password-modal-title">
+    <div class="modal-card">
+      <h3 id="password-modal-title">Change password</h3>
+
+      <form id="password-form" class="modal-form">
+        <div>
+          <label for="current-password">Current password</label>
+          <input id="current-password" type="password" autocomplete="current-password" placeholder="Current password" />
+        </div>
+
+        <div>
+          <label for="new-password">New password</label>
+          <input id="new-password" type="password" autocomplete="new-password" placeholder="New password" />
+        </div>
+
+        <div>
+          <label for="confirm-password">Confirm new password</label>
+          <input id="confirm-password" type="password" autocomplete="new-password" placeholder="Confirm new password" />
+        </div>
+
+        <div id="password-modal-error" class="inline-note" aria-live="polite"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary" id="cancel-password-btn">Cancel</button>
+          <button type="submit">Save password</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script>
     const owner = 'ProxyNoxy';
     const repo = 'proxynoxy.github.io';
+    const PASSWORD_KEY = 'proxynoxy_project_password';
+    const DEFAULT_PASSWORD = 'proxynoxy';
+
+    const appEl = document.getElementById('app');
+    const authScreen = document.getElementById('auth-screen');
+    const authForm = document.getElementById('auth-form');
+    const passwordInput = document.getElementById('password-input');
+    const authError = document.getElementById('auth-error');
+    const authTitle = document.getElementById('auth-title');
+    const authSubtitle = document.getElementById('auth-subtitle');
+
+    const passwordModal = document.getElementById('password-modal');
+    const passwordForm = document.getElementById('password-form');
+    const currentPasswordInput = document.getElementById('current-password');
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const passwordModalError = document.getElementById('password-modal-error');
+
+    function getStoredPassword() {
+      const saved = localStorage.getItem(PASSWORD_KEY);
+      return saved ? saved : DEFAULT_PASSWORD;
+    }
+
+    function setPassword(value) {
+      localStorage.setItem(PASSWORD_KEY, value);
+    }
+
+    function ensurePasswordSetup() {
+      const stored = localStorage.getItem(PASSWORD_KEY);
+      if (!stored) {
+        setPassword(DEFAULT_PASSWORD);
+      }
+    }
+
+    function unlockApp() {
+      appEl.classList.add('unlocked');
+      authScreen.classList.add('hidden');
+      passwordInput.value = '';
+      clearAuthError();
+    }
+
+    function lockApp() {
+      appEl.classList.remove('unlocked');
+      authScreen.classList.remove('hidden');
+      authTitle.textContent = 'Access required';
+      authSubtitle.textContent = 'Enter the password to view the project pages.';
+      passwordInput.focus();
+    }
+
+    function showAuthError(message) {
+      authError.textContent = message;
+      authError.classList.add('visible');
+    }
+
+    function clearAuthError() {
+      authError.textContent = '';
+      authError.classList.remove('visible');
+    }
+
+    function showPasswordModalMessage(message, isError = true) {
+      passwordModalError.textContent = message;
+      passwordModalError.style.color = isError ? '#fca5a5' : '#86efac';
+    }
+
+    function openPasswordModal() {
+      passwordModal.classList.add('open');
+      currentPasswordInput.value = '';
+      newPasswordInput.value = '';
+      confirmPasswordInput.value = '';
+      passwordModalError.textContent = '';
+      currentPasswordInput.focus();
+    }
+
+    function closePasswordModal() {
+      passwordModal.classList.remove('open');
+      passwordModalError.textContent = '';
+    }
+
+    function validatePasswordEntry(value) {
+      return value === getStoredPassword();
+    }
 
     function formatLabel(path) {
       return path
@@ -425,18 +774,100 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    authForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const entered = passwordInput.value.trim();
+      if (!entered) {
+        showAuthError('Please enter a password.');
+        return;
+      }
+
+      if (validatePasswordEntry(entered)) {
+        unlockApp();
+      } else {
+        showAuthError('Incorrect password. Please try again.');
+      }
+    });
+
+    document.getElementById('open-password-settings').addEventListener('click', function () {
+      openPasswordModal();
+    });
+
+    document.getElementById('change-password-btn').addEventListener('click', function () {
+      openPasswordModal();
+    });
+
+    document.getElementById('lock-btn').addEventListener('click', function () {
+      lockApp();
+    });
+
+    document.getElementById('cancel-password-btn').addEventListener('click', function () {
+      closePasswordModal();
+    });
+
+    passwordForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const currentPassword = currentPasswordInput.value;
+      const newPassword = newPasswordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (!currentPassword && !getStoredPassword()) {
+        // no password exists yet, allow first-time setup
+      }
+
+      const savedPassword = getStoredPassword();
+
+      if (savedPassword && currentPassword !== savedPassword) {
+        showPasswordModalMessage('Current password is incorrect.');
+        return;
+      }
+
+      if (!newPassword || !confirmPassword) {
+        showPasswordModalMessage('Please fill in both new password fields.');
+        return;
+      }
+
+      if (newPassword.length < 4) {
+        showPasswordModalMessage('Password must be at least 4 characters long.');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showPasswordModalMessage('New password and confirmation do not match.');
+        return;
+      }
+
+      setPassword(newPassword);
+      showPasswordModalMessage('Password updated successfully.', false);
+
+      setTimeout(() => {
+        closePasswordModal();
+        authTitle.textContent = 'Password updated';
+        authSubtitle.textContent = 'Use your new password to unlock the site.';
+      }, 800);
+    });
+
+    document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', () => {
       const button = document.getElementById('fullscreen-btn');
       if (button) {
-        button.addEventListener('click', toggleFullscreen);
+        button.textContent = document.fullscreenElement ? '⤢ Exit Fullscreen' : '⛶ Fullscreen';
       }
-      document.addEventListener('fullscreenchange', () => {
-        const button = document.getElementById('fullscreen-btn');
-        if (button) {
-          button.textContent = document.fullscreenElement ? '⤢ Exit Fullscreen' : '⛶ Fullscreen';
-        }
-      });
+    });
+
+    document.getElementById('password-modal').addEventListener('click', function (event) {
+      if (event.target === passwordModal) {
+        closePasswordModal();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      ensurePasswordSetup();
+      lockApp();
       loadSidebar();
+      passwordInput.focus();
     });
   </script>
 </body>
