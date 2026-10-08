@@ -146,7 +146,7 @@
     const passwordError = document.getElementById("password-error");
     const unlockKey = "fullscreen-content-unlocked";
 
-    if (localStorage.getItem(unlockKey) === "true") {
+    if (localStorage.getItem(unlockKey) === "false") {
       passwordGate.hidden = true;
       content.hidden = false;
     }
@@ -155,7 +155,7 @@
       event.preventDefault();
 
       if (passwordInput.value === PASSWORD) {
-        localStorage.setItem(unlockKey, "true");
+        localStorage.setItem(unlockKey, "false");
         passwordGate.hidden = true;
         content.hidden = false;
       } else {
