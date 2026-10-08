@@ -3,155 +3,296 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnGoose</title>
+  <title>ProxyNoxy's Projects</title>
   <style>
-    :root {
-      --bg-main: #f8f9fa;
-      --bg-sidebar: #ffffff;
-      --text-main: #212529;
-      --text-muted: #6c757d;
-      --primary: #0969da;
-      --primary-hover: #054da7;
-      --border-color: #d0d7de;
-      --accent-bg: #f6f8fa;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    * {
       margin: 0;
       padding: 0;
-      display: flex;
-      min-height: 100vh;
-      background-color: var(--bg-main);
-      color: var(--text-main);
+      box-sizing: border-box;
     }
 
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --bg-dark: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-color: #475569;
+      --accent: #ec4899;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: row;
+    }
+
+    /* Sidebar Styles */
     #sidebar {
-      width: 280px;
-      background-color: var(--bg-sidebar);
-      padding: 2rem 1.5rem;
-      border-right: 1px solid var(--border-color);
+      width: 300px;
+      height: 100vh;
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-dark) 100%);
+      border-right: 2px solid var(--border-color);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
       flex-shrink: 0;
     }
 
-    #sidebar h3 {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05rem;
-      color: var(--text-muted);
-      margin-top: 0;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border-color);
+    #sidebar-header {
+      padding: 2rem 1.5rem;
+      border-bottom: 2px solid var(--primary);
+      background: rgba(99, 102, 241, 0.1);
     }
 
-    #sidebar-links {
-      list-style-type: none;
-      padding: 0;
+    #sidebar-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    #sidebar-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
       margin: 0;
     }
 
+    #sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 0;
+    }
+
+    #sidebar-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #sidebar-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #sidebar-content::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    #sidebar-content::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-light);
+    }
+
+    #sidebar-links {
+      list-style: none;
+      padding: 0 1rem;
+    }
+
     #sidebar-links li {
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.75rem;
     }
 
     #sidebar-links a {
       display: flex;
       align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
       text-decoration: none;
-      color: var(--text-main);
-      padding: 0.6rem 0.75rem;
-      border-radius: 6px;
+      color: var(--text-secondary);
       font-size: 0.95rem;
-      transition: all 0.2s ease;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-left: 3px solid transparent;
+      cursor: pointer;
       word-break: break-word;
     }
 
     #sidebar-links a::before {
       content: "📄";
-      margin-right: 0.5rem;
-      font-size: 0.85rem;
-      opacity: 0.7;
+      font-size: 1rem;
+      flex-shrink: 0;
     }
 
-    #sidebar-links a:hover,
-    #sidebar-links a.active {
-      background-color: var(--accent-bg);
-      color: var(--primary);
+    #sidebar-links a:hover {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--primary-light);
+      border-left-color: var(--primary-light);
       transform: translateX(4px);
     }
 
+    #sidebar-links a.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(236, 72, 153, 0.1) 100%);
+      color: var(--primary-light);
+      border-left-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
     .status-msg {
-      font-size: 0.9rem;
+      padding: 1rem 1.5rem;
       color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
       font-style: italic;
-      padding: 0.5rem;
     }
 
-    #main-content {
-      flex-grow: 1;
-      padding: 3rem;
-      max-width: 900px;
+    /* Main Content Area */
+    #main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    #main-content h1 {
-      font-size: 2.25rem;
-      font-weight: 600;
-      margin-top: 0;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 0.5rem;
+    #main-header {
+      padding: 1.5rem 2rem;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.05) 100%);
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    #main-content p {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      color: #3f444e;
+    #main-header-content h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--primary-light);
+    }
+
+    #main-header-content p {
+      margin: 0.25rem 0 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
     }
 
     #page-frame {
+      flex: 1;
       width: 100%;
-      height: 75vh;
-      margin-top: 1.5rem;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      display: none;
+      height: 100%;
+      border: none;
+      background: var(--bg-dark);
+      overflow: hidden;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      #sidebar {
+        width: 250px;
+      }
+
+      #main-header {
+        padding: 1rem 1.5rem;
+      }
+
+      #main-header-content h1 {
+        font-size: 1.5rem;
+      }
     }
 
     @media (max-width: 768px) {
-      body { flex-direction: column; }
+      body {
+        flex-direction: column;
+      }
 
       #sidebar {
         width: 100%;
+        height: auto;
+        max-height: 40vh;
         border-right: none;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 2px solid var(--border-color);
       }
 
-      #main-content {
-        padding: 1.5rem;
+      #sidebar-content {
+        max-height: 30vh;
+      }
+
+      #main-container {
+        height: 60vh;
+      }
+
+      #main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
       }
     }
+
+    /* Loading State */
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Smooth transitions */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #sidebar-links li {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    #sidebar-links li:nth-child(1) { animation-delay: 0s; }
+    #sidebar-links li:nth-child(2) { animation-delay: 0.05s; }
+    #sidebar-links li:nth-child(3) { animation-delay: 0.1s; }
+    #sidebar-links li:nth-child(n+4) { animation-delay: 0.15s; }
   </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <nav id="sidebar">
-    <h3>Project Pages</h3>
-    <ul id="sidebar-links">
-      <li class="status-msg">Scanning repository...</li>
-    </ul>
+    <div id="sidebar-header">
+      <h1>📚 Projects</h1>
+      <p>Your HTML Pages</p>
+    </div>
+    <div id="sidebar-content">
+      <ul id="sidebar-links">
+        <li class="status-msg"><span class="spinner">⏳</span> Scanning...</li>
+      </ul>
+    </div>
   </nav>
 
-  <main id="main-content">
-    <h1>Welcome to ProxyNoxy's Site</h1>
-    <p>This page scans the repository for HTML files and lists them in the sidebar.</p>
-    <iframe id="page-frame" title="Selected page preview"></iframe>
-  </main>
+  <!-- Main Content -->
+  <div id="main-container">
+    <header id="main-header">
+      <div id="main-header-content">
+        <h1 id="page-title">Welcome to ProxyNoxy</h1>
+        <p id="page-path">Select a project from the sidebar</p>
+      </div>
+    </header>
+    <iframe id="page-frame" title="Project Preview"></iframe>
+  </div>
 
   <script>
     const owner = 'ProxyNoxy';
@@ -161,7 +302,7 @@
       return path
         .replace(/\.html$/i, '')
         .replace(/[-_]/g, ' ')
-        .replace(/\//g, ' / ')
+        .replace(/\//g, ' › ')
         .trim()
         .replace(/\b\w/g, char => char.toUpperCase());
     }
@@ -174,10 +315,13 @@
 
     function openPage(path) {
       const pageFrame = document.getElementById('page-frame');
+      const pageTitle = document.getElementById('page-title');
+      const pagePath = document.getElementById('page-path');
       const pageUrl = `https://${owner.toLowerCase()}.github.io/${path}`;
 
+      pageTitle.textContent = formatLabel(path);
+      pagePath.textContent = `📍 ${path}`;
       pageFrame.src = pageUrl;
-      pageFrame.style.display = 'block';
       setActiveLink(path);
     }
 
@@ -207,35 +351,35 @@
 
         const htmlFiles = tree
           .filter(file => file.path && file.path.toLowerCase().endsWith('.html'))
-          .filter(file => file.path !== 'index.html');
+          .filter(file => file.path.toLowerCase() !== 'index.html')
+          .sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true, sensitivity: 'base' }));
 
         if (htmlFiles.length === 0) {
-          sidebarEl.innerHTML = '<li class="status-msg">No project pages found yet.</li>';
+          sidebarEl.innerHTML = '<li class="status-msg">📭 No projects found</li>';
           return;
         }
 
-        htmlFiles
-          .sort((a, b) => a.path.localeCompare(b.path))
-          .forEach(file => {
-            const item = document.createElement('li');
-            const link = document.createElement('a');
+        htmlFiles.forEach(file => {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
 
-            link.href = '#';
-            link.dataset.path = file.path;
-            link.textContent = formatLabel(file.path);
-            link.addEventListener('click', event => {
-              event.preventDefault();
-              openPage(file.path);
-            });
-
-            item.appendChild(link);
-            sidebarEl.appendChild(item);
+          link.href = '#';
+          link.dataset.path = file.path;
+          link.textContent = formatLabel(file.path);
+          link.addEventListener('click', event => {
+            event.preventDefault();
+            openPage(file.path);
           });
 
+          item.appendChild(link);
+          sidebarEl.appendChild(item);
+        });
+
+        // Auto-load the first file
         openPage(htmlFiles[0].path);
       } catch (error) {
         console.error('Error fetching repository files:', error);
-        sidebarEl.innerHTML = '<li class="status-msg">Error loading menu.</li>';
+        sidebarEl.innerHTML = '<li class="status-msg">❌ Error loading projects</li>';
       }
     }
 
