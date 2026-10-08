@@ -549,20 +549,41 @@
       try {
         const branches = ['main', 'master'];
         let tree = null;
+        let lastError = null;
 
         for (const branch of branches) {
-          const url = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
-          const response = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
+          try {
+            const url = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
+            const response = await fetch(url, { 
+              headers: { 
+                'Accept': 'application/vnd.github+json',
+                'Cache-Control': 'no-cache'
+              },
+              timeout: 10000
+            });
 
-          if (response.ok) {
-            const data = await response.json();
-            tree = data.tree || [];
-            break;
+            if (response.ok) {
+              const data = await response.json();
+              tree = data.tree || [];
+              break;
+            } else if (response.status === 404) {
+              lastError = `Branch ${branch} not found`;
+              continue;
+            } else if (response.status === 403) {
+              lastError = 'API rate limit reached. Please try again later.';
+              break;
+            } else {
+              lastError = `HTTP ${response.status}`;
+              continue;
+            }
+          } catch (err) {
+            lastError = err.message;
+            continue;
           }
         }
 
         if (!tree) {
-          throw new Error('Could not load repository file tree.');
+          throw new Error(lastError || 'Could not load repository file tree.');
         }
 
         sidebarEl.innerHTML = '';
@@ -596,7 +617,7 @@
         openPage(htmlFiles[0].path);
       } catch (error) {
         console.error('Error fetching repository files:', error);
-        sidebarEl.innerHTML = '<li class="status-msg">❌ Error loading projects</li>';
+        sidebarEl.innerHTML = `<li class="status-msg">❌ ${error.message || 'Error loading projects'}</li>`;
       }
     }
 
