@@ -1,1 +1,48 @@
+<!-- The Sidebar Container in your HTML -->
+<div id="sidebar">
+  <h3>Repository Pages</h3>
+  <ul id="file-list">Loading files...</ul>
+</div>
+
+<script>
+  // Replace with your GitHub username and repository name
+  const USERNAME = 'proxynoxy';
+  const REPO = 'proxynoxy.github.io';
+  const API_URL = `https://github.com{USERNAME}/${REPO}/contents/`;
+
+  async function fetchHtmlFiles() {
+    try {
+      const response = await fetch(API_URL);
+      const files = await response.json();
+      const listContainer = document.getElementById('file-list');
+      listContainer.innerHTML = ''; // Clear loading text
+
+      // Filter for files ending in .html, excluding index.html if desired
+      const htmlFiles = files.filter(file => file.name.endsWith('.html') && file.name !== 'index.html');
+
+      if (htmlFiles.length === 0) {
+        listContainer.innerHTML = '<li>No pages found</li>';
+        return;
+      }
+
+      htmlFiles.forEach(file => {
+        const listItem = document.createElement('li');
+        const link = document.createElement('a');
+        
+        // Link to the actual published page (assuming GitHub Pages deployment)
+        link.href = `https://${USERNAME}.github.io/${REPO}/${file.name}`;
+        link.textContent = file.name.replace('.html', ''); // Clean up the name for the display
+        
+        listItem.appendChild(link);
+        listContainer.appendChild(listItem);
+      });
+    } catch (error) {
+      console.error('Error fetching repo files:', error);
+      document.getElementById('file-list').innerHTML = '<li>Failed to load sidebar links.</li>';
+    }
+  }
+
+  // Run the script when the page loads
+  fetchHtmlFiles();
+</script>
 
