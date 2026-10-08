@@ -440,7 +440,7 @@
 
         <div class="header-actions">
           <button class="header-btn" type="button" id="fullscreen-btn">⛶ Fullscreen</button>
-          <button class="header-btn secondary" type="button" id="lock-btn">🔒 Lock</button>
+          <button class="header-btn secondary" type="button" id="logout-btn">🚪 Logout</button>
         </div>
       </header>
       <iframe id="page-frame" title="Project Preview"></iframe>
@@ -451,6 +451,7 @@
     const owner = 'ProxyNoxy';
     const repo = 'proxynoxy.github.io';
     const SITE_PASSWORD = 'proxynoxy';
+    const AUTH_KEY = 'proxynoxy_authenticated';
 
     const appEl = document.getElementById('app');
     const authScreen = document.getElementById('auth-screen');
@@ -459,6 +460,7 @@
     const authError = document.getElementById('auth-error');
 
     function unlockApp() {
+      localStorage.setItem(AUTH_KEY, 'true');
       appEl.classList.add('unlocked');
       authScreen.classList.add('hidden');
       passwordInput.value = '';
@@ -466,9 +468,14 @@
     }
 
     function lockApp() {
+      localStorage.removeItem(AUTH_KEY);
       appEl.classList.remove('unlocked');
       authScreen.classList.remove('hidden');
       passwordInput.focus();
+    }
+
+    function isAuthenticated() {
+      return localStorage.getItem(AUTH_KEY) === 'true';
     }
 
     function showAuthError(message) {
@@ -609,7 +616,7 @@
       }
     });
 
-    document.getElementById('lock-btn').addEventListener('click', lockApp);
+    document.getElementById('logout-btn').addEventListener('click', lockApp);
     document.getElementById('fullscreen-btn').addEventListener('click', toggleFullscreen);
 
     document.addEventListener('fullscreenchange', () => {
@@ -620,9 +627,15 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-      lockApp();
+      if (isAuthenticated()) {
+        unlockApp();
+      } else {
+        lockApp();
+      }
       loadSidebar();
-      passwordInput.focus();
+      if (!isAuthenticated()) {
+        passwordInput.focus();
+      }
     });
   </script>
 </body>
