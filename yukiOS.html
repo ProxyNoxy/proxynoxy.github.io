@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noahs Tutoring Hub</title>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    iframe {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      border: 0;
+    }
+
+    #password-gate {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      box-sizing: border-box;
+      background:
+        radial-gradient(ellipse at 15% 15%, rgba(89, 196, 255, 0.18), transparent 42%),
+        radial-gradient(ellipse at 85% 85%, rgba(88, 126, 255, 0.14), transparent 40%),
+        #090d18;
+      color: #f8fafc;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    #password-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: min(360px, 100%);
+      padding: 36px;
+      box-sizing: border-box;
+      border: 1px solid rgba(104, 199, 255, 0.35);
+      border-radius: 20px;
+      background: rgba(14, 21, 36, 0.94);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 28px rgba(89, 196, 255, 0.12);
+      backdrop-filter: blur(14px);
+    }
+
+    #password-form label {
+      margin-bottom: 4px;
+      font-size: 1.2rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    #password-form input,
+    #password-form button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px 15px;
+      border-radius: 10px;
+      font: inherit;
+    }
+
+    #password-form input {
+      border: 1px solid rgba(104, 199, 255, 0.55);
+      outline: none;
+      background: #0d1422;
+      color: #fff;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    #password-form input::placeholder {
+      color: #7fa9cf;
+    }
+
+    #password-form input:focus {
+      border-color: #68c7ff;
+      box-shadow: 0 0 0 3px rgba(104, 199, 255, 0.2), 0 0 16px rgba(104, 199, 255, 0.16);
+    }
+
+    #password-form button {
+      border: 1px solid #68c7ff;
+      background: linear-gradient(135deg, #2676bd, #68c7ff);
+      color: #07111f;
+      font-weight: 650;
+      cursor: pointer;
+      transition: filter 160ms ease, transform 160ms ease;
+    }
+
+    #password-form button:hover {
+      filter: brightness(1.12);
+    }
+
+    #password-form button:active {
+      transform: translateY(1px);
+    }
+
+    #password-form button:focus-visible {
+      outline: 3px solid #68c7ff;
+      outline-offset: 3px;
+    }
+
+    #password-error {
+      min-height: 1.2em;
+      color: #8bd5ff;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 420px) {
+      #password-form {
+        padding: 28px 22px;
+      }
+    }
+
+    #content[hidden],
+    #password-gate[hidden] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main id="password-gate">
+    <form id="password-form">
+      <label for="password">Enter the password to continue</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button type="submit">Unlock</button>
+      <div id="password-error" role="alert" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <div id="content" hidden>
+    <iframe src="https://yukios.pages.dev/" title="Full-screen content"></iframe>
+  </div>
+
+  <script>
+    const PASSWORD = "ReallyLongPassword";
+    const passwordGate = document.getElementById("password-gate");
+    const content = document.getElementById("content");
+    const passwordForm = document.getElementById("password-form");
+    const passwordInput = document.getElementById("password");
+    const passwordError = document.getElementById("password-error");
+    const unlockKey = "fullscreen-content-unlocked";
+
+    if (localStorage.getItem(unlockKey) === "true") {
+      passwordGate.hidden = true;
+      content.hidden = false;
+    }
+
+    passwordForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (passwordInput.value === PASSWORD) {
+        localStorage.setItem(unlockKey, "true");
+        passwordGate.hidden = true;
+        content.hidden = false;
+      } else {
+        passwordError.textContent = "Incorrect password. Please try again.";
+        passwordInput.select();
+      }
+    });
+  </script>
+</body>
+</html>
