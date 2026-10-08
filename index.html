@@ -41,7 +41,6 @@
       flex-direction: row;
     }
 
-    /* Sidebar Styles */
     #sidebar {
       width: 300px;
       height: 100vh;
@@ -152,7 +151,6 @@
       font-style: italic;
     }
 
-    /* Main Content Area */
     #main-container {
       flex: 1;
       display: flex;
@@ -169,6 +167,7 @@
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      gap: 1rem;
     }
 
     #main-header-content h1 {
@@ -184,6 +183,26 @@
       font-size: 0.9rem;
     }
 
+    #fullscreen-btn {
+      appearance: none;
+      border: 1px solid rgba(99, 102, 241, 0.7);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(236, 72, 153, 0.12) 100%);
+      color: var(--text-primary);
+      font-weight: 600;
+      padding: 0.75rem 1.1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    #fullscreen-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.2);
+      border-color: var(--primary-light);
+    }
+
     #page-frame {
       flex: 1;
       width: 100%;
@@ -193,7 +212,6 @@
       overflow: hidden;
     }
 
-    /* Responsive Design */
     @media (max-width: 1024px) {
       #sidebar {
         width: 250px;
@@ -236,7 +254,6 @@
       }
     }
 
-    /* Loading State */
     .spinner {
       display: inline-block;
       animation: spin 1s linear infinite;
@@ -247,7 +264,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Smooth transitions */
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -270,7 +286,6 @@
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
   <nav id="sidebar">
     <div id="sidebar-header">
       <h1>📚 Projects</h1>
@@ -283,13 +298,13 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
   <div id="main-container">
     <header id="main-header">
       <div id="main-header-content">
         <h1 id="page-title">Welcome to ProxyNoxy</h1>
         <p id="page-path">Select a project from the sidebar</p>
       </div>
+      <button id="fullscreen-btn" type="button" aria-label="Toggle fullscreen">⛶ Fullscreen</button>
     </header>
     <iframe id="page-frame" title="Project Preview"></iframe>
   </div>
@@ -323,6 +338,34 @@
       pagePath.textContent = `📍 ${path}`;
       pageFrame.src = pageUrl;
       setActiveLink(path);
+    }
+
+    async function toggleFullscreen() {
+      const pageFrame = document.getElementById('page-frame');
+      const button = document.getElementById('fullscreen-btn');
+      const target = pageFrame;
+
+      if (!document.fullscreenElement) {
+        try {
+          if (target.requestFullscreen) {
+            await target.requestFullscreen();
+          } else if (document.documentElement.requestFullscreen) {
+            await document.documentElement.requestFullscreen();
+          }
+        } catch (error) {
+          console.error('Fullscreen failed:', error);
+        }
+      } else {
+        try {
+          await document.exitFullscreen();
+        } catch (error) {
+          console.error('Exit fullscreen failed:', error);
+        }
+      }
+
+      if (button) {
+        button.textContent = document.fullscreenElement ? '⤢ Exit Fullscreen' : '⛶ Fullscreen';
+      }
     }
 
     async function loadSidebar() {
@@ -375,7 +418,6 @@
           sidebarEl.appendChild(item);
         });
 
-        // Auto-load the first file
         openPage(htmlFiles[0].path);
       } catch (error) {
         console.error('Error fetching repository files:', error);
@@ -383,7 +425,19 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', loadSidebar);
+    document.addEventListener('DOMContentLoaded', () => {
+      const button = document.getElementById('fullscreen-btn');
+      if (button) {
+        button.addEventListener('click', toggleFullscreen);
+      }
+      document.addEventListener('fullscreenchange', () => {
+        const button = document.getElementById('fullscreen-btn');
+        if (button) {
+          button.textContent = document.fullscreenElement ? '⤢ Exit Fullscreen' : '⛶ Fullscreen';
+        }
+      });
+      loadSidebar();
+    });
   </script>
 </body>
 </html>
