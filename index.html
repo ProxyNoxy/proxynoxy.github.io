@@ -3,117 +3,209 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My GitHub Website</title>
+  <title>ProxyNoxy Portfolio</title>
   <style>
-    /* Basic Layout Setup */
+    /* Global Resets & Typography */
+    :root {
+      --bg-main: #f8f9fa;
+      --bg-sidebar: #ffffff;
+      --text-main: #212529;
+      --text-muted: #6c757d;
+      --primary: #0969da;
+      --primary-hover: #054da7;
+      --border-color: #d0d7de;
+      --accent-bg: #f6f8fa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       margin: 0;
+      padding: 0;
       display: flex;
+      min-height: 100vh;
+      background-color: var(--bg-main);
+      color: var(--text-main);
     }
     
-    /* Sidebar Styling */
+    /* Layout & Sidebar Styling */
     #sidebar {
-      width: 250px;
-      background-color: #f4f4f4;
-      padding: 20px;
-      height: 100vh;
-      box-sizing: border-box;
-      border-right: 1px solid #ddd;
+      width: 280px;
+      background-color: var(--bg-sidebar);
+      padding: 2rem 1.5rem;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
     }
     
     #sidebar h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05rem;
+      color: var(--text-muted);
       margin-top: 0;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
     }
     
     #sidebar-links {
       list-style-type: none;
       padding: 0;
+      margin: 0;
     }
     
     #sidebar-links li {
-      margin-bottom: 10px;
+      margin-bottom: 0.4rem;
     }
     
     #sidebar-links a {
+      display: flex;
+      align-items: center;
       text-decoration: none;
-      color: #333;
+      color: var(--text-main);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    /* Subtle document icon before each link */
+    #sidebar-links a::before {
+      content: "📄";
+      margin-right: 0.5rem;
+      font-size: 0.85rem;
+      opacity: 0.7;
     }
     
     #sidebar-links a:hover {
-      color: #0066cc;
+      background-color: var(--accent-bg);
+      color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    /* State messages (loading/error) */
+    .status-msg {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 0.5rem;
     }
     
-    /* Main Content Styling */
+    /* Main Content Area */
     #main-content {
       flex-grow: 1;
-      padding: 20px;
+      padding: 3rem;
+      max-width: 800px;
+    }
+    
+    #main-content h1 {
+      font-size: 2.25rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    #main-content p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #3f444e;
+    }
+
+    /* Mobile Responsive Tweaks */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      #sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1.5rem;
+      }
+      #main-content {
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- Sidebar Component -->
-  <div id="sidebar">
-    <h3>Documentation</h3>
+  <nav id="sidebar">
+    <h3>Project Pages</h3>
     <ul id="sidebar-links">
-      <li>Loading pages...</li>
+      <li class="status-msg">Scanning repository...</li>
     </ul>
-  </div>
+  </nav>
 
   <!-- Main Content Area -->
-  <div id="main-content">
-    <h1>Welcome to My Website</h1>
-    <p>The sidebar on the left dynamically updates by fetching all HTML files inside this GitHub repository.</p>
-  </div>
+  <main id="main-content">
+    <h1>Welcome to ProxyNoxy's Site</h1>
+    <p>This page automatically pulls any new HTML files you push into your <strong>proxynoxy.github.io</strong> repository and shows them instantly in the sidebar menu on the left.</p>
+  </main>
 
   <!-- JavaScript Logic -->
   <script>
     async function loadSidebar() {
-      // CHANGE THESE TO YOUR GITHUB DETAILS
       const username = 'ProxyNoxy'; 
       const repo = 'proxynoxy.github.io';
       
-      // Fetches the repository directory structure via GitHub API
-      const url = `https://github.com{username}/${repo}/git/trees/main?recursive=1`;
+      // Attempting 'main' branch first
+      let url = `https://github.com{username}/${repo}/git/trees/main?recursive=1`;
 
       try {
-        const response = await fetch(url);
+        let response = await fetch(url);
+        
+        // Fallback to 'master' if the repository defaults to the master branch name
+        if (response.status === 404) {
+          url = `https://github.com{username}/${repo}/git/trees/master?recursive=1`;
+          response = await fetch(url);
+        }
+        
         if (!response.ok) throw new Error('Failed to fetch repo data');
         
         const data = await response.json();
         const sidebarEl = document.getElementById('sidebar-links');
-        sidebarEl.innerHTML = ''; // Clear the loading placeholder
+        sidebarEl.innerHTML = ''; // Clear status message
 
-        // Filter for files ending in .html, skipping this main index file
+        // Target all HTML files, ignoring the core index page
         const htmlFiles = data.tree.filter(file => 
           file.path.endsWith('.html') && file.path !== 'index.html'
         );
 
         if (htmlFiles.length === 0) {
-          sidebarEl.innerHTML = '<li>No other pages found.</li>';
+          sidebarEl.innerHTML = '<li class="status-msg">No project pages found yet.</li>';
           return;
         }
 
-        // Build list elements for every HTML file discovered
+        // Add each discovered file to the menu layout
         htmlFiles.forEach(file => {
           const listItem = document.createElement('li');
           const link = document.createElement('a');
           
           link.href = file.path;
-          // Clean up the text by removing the extension and replacing dashes/underscores with spaces
-          link.textContent = file.path.replace('.html', '').replace(/[-_]/g, ' '); 
+          
+          // Capitalize names and convert symbols into spaces
+          const cleanName = file.path.replace('.html', '').replace(/[-_]/g, ' ');
+          link.textContent = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
           
           listItem.appendChild(link);
           sidebarEl.appendChild(listItem);
         });
       } catch (error) {
         console.error('Error fetching repository files:', error);
-        document.getElementById('sidebar-links').innerHTML = '<li>Error loading menu.</li>';
+        document.getElementById('sidebar-links').innerHTML = '<li class="status-msg">Error loading menu.</li>';
       }
     }
 
-    // Initialize the script when the DOM is ready
     document.addEventListener('DOMContentLoaded', loadSidebar);
   </script>
 </body>
