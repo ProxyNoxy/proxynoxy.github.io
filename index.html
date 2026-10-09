@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LearnGoose — browser games and interactive experiences in a sleek cyberpunk arcade hub.">
+  <meta name="theme-color" content="#ff006e">
+  <meta property="og:title" content="LearnGoose">
+  <meta property="og:description" content="Explore games and interactive experiences from LearnGoose.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>LearnGoose</title>
   <style>
     * {
@@ -708,6 +714,14 @@
           item.appendChild(link);
           sidebarEl.appendChild(item);
         });
+    }
+
+    function setActiveLink(path) {
+      const links = document.querySelectorAll('#sidebar-links a');
+      links.forEach(link => {
+        const isActive = path && link.dataset.path === path;
+        link.classList.toggle('active', isActive);
+      });
     }
 
     authForm.addEventListener('submit', function (event) {
