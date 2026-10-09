@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnGoose</title>
+  <title>ProxyNoxy's Projects</title>
   <style>
     * {
       margin: 0;
@@ -407,7 +407,7 @@
   <div id="auth-screen">
     <div id="auth-card">
       <h2>Access required</h2>
-      <p>Enter the password to activate LearnGoose.</p>
+      <p>Enter the password to view the project pages.</p>
 
       <form id="auth-form">
         <label for="password-input">Password</label>
@@ -421,8 +421,8 @@
   <div id="app">
     <nav id="sidebar">
       <div id="sidebar-header">
-        <h1>📚 LearnGoose</h1>
-        <p>Games</p>
+        <h1>📚 Projects</h1>
+        <p>Your HTML Pages</p>
       </div>
       <div id="sidebar-content">
         <ul id="sidebar-links">
@@ -434,7 +434,7 @@
     <div id="main-container">
       <header id="main-header">
         <div id="main-header-content">
-          <h1 id="page-title">Welcome to LearnGoose</h1>
+          <h1 id="page-title">Welcome to ProxyNoxy</h1>
           <p id="page-path">Select a project from the sidebar</p>
         </div>
 
@@ -450,9 +450,16 @@
   <script>
     const owner = 'ProxyNoxy';
     const repo = 'proxynoxy.github.io';
-    const SITE_PASSWORD = 'ReallyLongPassword';
+    const SITE_PASSWORD = 'proxynoxy';
     const AUTH_KEY = 'proxynoxy_authenticated';
-    const STATIC_HTML_FILES = ['CloudMoon.html','yukiOS.html','NoahsTutoring.html','StartMyEducation.html','cherri.html','galaxy.html'];
+    const STATIC_HTML_FILES = [
+      'pages/CloudMoon.html',
+      'pages/NoahsTutoring.html',
+      'pages/StartMyEducation.html',
+      'pages/cherri.html',
+      'pages/galaxy.html',
+      'pages/yukiOS.html'
+    ];
 
     const appEl = document.getElementById('app');
     const authScreen = document.getElementById('auth-screen');
@@ -490,10 +497,9 @@
     }
 
     function formatLabel(path) {
-      return path
-        .replace(/\.html$/i, '')
+      const fileName = path.replace(/^.*\//, '').replace(/\.html$/i, '');
+      return fileName
         .replace(/[-_]/g, ' ')
-        .replace(/\//g, ' › ')
         .trim()
         .replace(/\b\w/g, char => char.toUpperCase());
     }
