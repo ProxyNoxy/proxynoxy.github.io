@@ -573,7 +573,7 @@
       <div id="home-page">
         <h2>Welcome to LearnGoose</h2>
         <p>Just do what you came here for lol.</p>
-        <button class="home-cta" onclick="document.querySelector('#sidebar-links a')?.click()">Explore Games</button>
+        <button class="home-cta" onclick="document.querySelector('#sidebar-links a')?.click()">Totally Educational Games</button>
       </div>
 
       <iframe id="page-frame" title="Game Preview" style="display: none;"></iframe>
@@ -653,7 +653,7 @@
       const pageUrl = `https://${owner.toLowerCase()}.github.io/${path}`;
 
       pageTitle.textContent = formatLabel(path);
-      pagePath.textContent = `📍 ${path}`;
+      pagePath.textContent = `${path}`;
       pageFrame.src = pageUrl;
       homePage.style.display = 'none';
       pageFrame.style.display = 'block';
