@@ -12,19 +12,19 @@
     }
 
     :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --primary-light: #818cf8;
-      --bg-dark: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-tertiary: #334155;
-      --text-primary: #f1f5f9;
-      --text-secondary: #cbd5e1;
-      --text-muted: #94a3b8;
-      --border-color: #475569;
-      --accent: #ec4899;
-      --danger: #ef4444;
-      --panel: rgba(15, 23, 42, 0.85);
+      --primary: #ff006e;
+      --primary-dark: #d60056;
+      --primary-light: #ff4d94;
+      --bg-dark: #0a0e27;
+      --bg-secondary: #1a1f3a;
+      --bg-tertiary: #2a3050;
+      --text-primary: #ffffff;
+      --text-secondary: #e0e0e0;
+      --text-muted: #a0a0a0;
+      --border-color: #3a4060;
+      --accent: #ff006e;
+      --danger: #ff1744;
+      --panel: rgba(10, 14, 39, 0.95);
     }
 
     html, body {
@@ -35,7 +35,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #ff006e 100%);
       color: var(--text-primary);
       display: flex;
       flex-direction: row;
@@ -59,25 +59,25 @@
       width: 300px;
       height: 100vh;
       background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-dark) 100%);
-      border-right: 2px solid var(--border-color);
+      border-right: 2px solid var(--primary);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 4px 0 30px rgba(255, 0, 110, 0.2);
       flex-shrink: 0;
     }
 
     #sidebar-header {
       padding: 2rem 1.5rem;
       border-bottom: 2px solid var(--primary);
-      background: rgba(99, 102, 241, 0.1);
+      background: linear-gradient(135deg, rgba(255, 0, 110, 0.15) 0%, rgba(255, 77, 148, 0.1) 100%);
     }
 
     #sidebar-header h1 {
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -144,17 +144,17 @@
     }
 
     #sidebar-links a:hover {
-      background: rgba(99, 102, 241, 0.15);
+      background: rgba(255, 0, 110, 0.15);
       color: var(--primary-light);
       border-left-color: var(--primary-light);
       transform: translateX(4px);
     }
 
     #sidebar-links a.active {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(236, 72, 153, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(255, 0, 110, 0.3) 0%, rgba(255, 77, 148, 0.15) 100%);
       color: var(--primary-light);
       border-left-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+      box-shadow: 0 4px 12px rgba(255, 0, 110, 0.3);
     }
 
     .status-msg {
@@ -175,12 +175,12 @@
 
     #main-header {
       padding: 1.5rem 2rem;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.05) 100%);
-      border-bottom: 2px solid var(--border-color);
+      background: linear-gradient(135deg, rgba(255, 0, 110, 0.2) 0%, rgba(255, 77, 148, 0.1) 100%);
+      border-bottom: 2px solid var(--primary);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 20px rgba(255, 0, 110, 0.15);
       gap: 1rem;
       flex-wrap: wrap;
     }
@@ -189,7 +189,10 @@
       font-size: 1.75rem;
       font-weight: 700;
       margin: 0;
-      color: var(--primary-light);
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     #main-header-content p {
@@ -208,8 +211,8 @@
     .header-btn,
     #auth-form button {
       appearance: none;
-      border: 1px solid rgba(99, 102, 241, 0.7);
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(236, 72, 153, 0.12) 100%);
+      border: 1px solid rgba(255, 0, 110, 0.7);
+      background: linear-gradient(135deg, rgba(255, 0, 110, 0.2) 0%, rgba(255, 77, 148, 0.15) 100%);
       color: var(--text-primary);
       font-weight: 600;
       padding: 0.75rem 1.1rem;
@@ -221,14 +224,14 @@
     }
 
     .header-btn.secondary {
-      background: rgba(148, 163, 184, 0.08);
-      border-color: rgba(148, 163, 184, 0.4);
+      background: rgba(160, 160, 160, 0.08);
+      border-color: rgba(160, 160, 160, 0.4);
     }
 
     .header-btn:hover,
     #auth-form button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.2);
+      box-shadow: 0 6px 18px rgba(255, 0, 110, 0.3);
       border-color: var(--primary-light);
     }
 
@@ -241,11 +244,63 @@
       overflow: hidden;
     }
 
+    #home-page {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(10, 14, 39, 0.8) 0%, rgba(26, 31, 58, 0.8) 50%, rgba(255, 0, 110, 0.1) 100%);
+      overflow-y: auto;
+    }
+
+    #home-page h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+    }
+
+    #home-page p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 600px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    #home-page .home-cta {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+    }
+
+    #home-page .home-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(255, 0, 110, 0.4);
+    }
+
     #auth-screen {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(99, 102, 241, 0.18), rgba(15, 23, 42, 0.92)),
-                  linear-gradient(135deg, #020817 0%, #0f172a 100%);
+      background: radial-gradient(circle at center, rgba(255, 0, 110, 0.2), rgba(10, 14, 39, 0.95)),
+                  linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -261,16 +316,19 @@
     #auth-card {
       width: min(420px, calc(100vw - 2rem));
       background: var(--panel);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      border: 1px solid rgba(255, 0, 110, 0.3);
       border-radius: 20px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 25px 60px rgba(255, 0, 110, 0.15), 0 0 40px rgba(255, 0, 110, 0.1);
       padding: 2rem;
     }
 
     #auth-card h2 {
       margin: 0 0 0.35rem 0;
       font-size: 1.8rem;
-      color: var(--text-primary);
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     #auth-card p {
@@ -294,8 +352,8 @@
 
     #auth-form input {
       width: 100%;
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 0, 110, 0.4);
+      background: rgba(10, 14, 39, 0.9);
       color: var(--text-primary);
       border-radius: 10px;
       padding: 0.9rem 1rem;
@@ -306,18 +364,20 @@
 
     #auth-form input:focus {
       border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+      box-shadow: 0 0 0 3px rgba(255, 0, 110, 0.2);
     }
 
     #auth-form button {
       margin-top: 0.35rem;
       font-size: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border: 1px solid var(--primary);
     }
 
     #auth-error {
       min-height: 1.1rem;
       font-size: 0.85rem;
-      color: #fca5a5;
+      color: #ff6b9d;
       opacity: 0;
       transition: opacity 0.2s ease;
     }
@@ -354,7 +414,7 @@
         height: auto;
         max-height: 40vh;
         border-right: none;
-        border-bottom: 2px solid var(--border-color);
+        border-bottom: 2px solid var(--primary);
       }
 
       #sidebar-content {
@@ -369,6 +429,14 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+      }
+
+      #home-page h2 {
+        font-size: 2rem;
+      }
+
+      #home-page p {
+        font-size: 1rem;
       }
     }
 
@@ -421,7 +489,7 @@
   <div id="app">
     <nav id="sidebar">
       <div id="sidebar-header">
-        <h1>📚 Projects</h1>
+        <h1>🎨 Projects</h1>
         <p>Your HTML Pages</p>
       </div>
       <div id="sidebar-content">
@@ -434,8 +502,8 @@
     <div id="main-container">
       <header id="main-header">
         <div id="main-header-content">
-          <h1 id="page-title">Welcome to ProxyNoxy</h1>
-          <p id="page-path">Select a project from the sidebar</p>
+          <h1 id="page-title">ProxyNoxy's Projects</h1>
+          <p id="page-path">Welcome home</p>
         </div>
 
         <div class="header-actions">
@@ -443,7 +511,14 @@
           <button class="header-btn secondary" type="button" id="logout-btn">🚪 Logout</button>
         </div>
       </header>
-      <iframe id="page-frame" title="Project Preview"></iframe>
+      
+      <div id="home-page">
+        <h2>Welcome to ProxyNoxy</h2>
+        <p>Select a project from the sidebar to get started. Explore a collection of interactive web applications and games.</p>
+        <button class="home-cta" onclick="document.querySelector('#sidebar-links a').click()">Explore Projects</button>
+      </div>
+      
+      <iframe id="page-frame" title="Project Preview" style="display: none;"></iframe>
     </div>
   </div>
 
@@ -466,6 +541,8 @@
     const authForm = document.getElementById('auth-form');
     const passwordInput = document.getElementById('password-input');
     const authError = document.getElementById('auth-error');
+    const homePage = document.getElementById('home-page');
+    const pageFrame = document.getElementById('page-frame');
 
     function unlockApp() {
       localStorage.setItem(AUTH_KEY, 'true');
@@ -504,14 +581,15 @@
         .replace(/\b\w/g, char => char.toUpperCase());
     }
 
-    function setActiveLink(path) {
-      document.querySelectorAll('#sidebar-links a').forEach(link => {
-        link.classList.toggle('active', link.dataset.path === path);
-      });
+    function showHomePage() {
+      homePage.style.display = 'flex';
+      pageFrame.style.display = 'none';
+      document.getElementById('page-title').textContent = "ProxyNoxy's Projects";
+      document.getElementById('page-path').textContent = 'Welcome home';
+      setActiveLink(null);
     }
 
     function openPage(path) {
-      const pageFrame = document.getElementById('page-frame');
       const pageTitle = document.getElementById('page-title');
       const pagePath = document.getElementById('page-path');
       const pageUrl = `https://${owner.toLowerCase()}.github.io/${path}`;
@@ -519,13 +597,14 @@
       pageTitle.textContent = formatLabel(path);
       pagePath.textContent = `📍 ${path}`;
       pageFrame.src = pageUrl;
+      homePage.style.display = 'none';
+      pageFrame.style.display = 'block';
       setActiveLink(path);
     }
 
     async function toggleFullscreen() {
-      const pageFrame = document.getElementById('page-frame');
       const button = document.getElementById('fullscreen-btn');
-      const target = pageFrame;
+      const target = pageFrame.style.display === 'none' ? document.getElementById('main-container') : pageFrame;
 
       if (!document.fullscreenElement) {
         try {
@@ -577,8 +656,6 @@
           item.appendChild(link);
           sidebarEl.appendChild(item);
         });
-
-      openPage(STATIC_HTML_FILES[0]);
     }
 
     authForm.addEventListener('submit', function (event) {
@@ -614,6 +691,7 @@
         lockApp();
       }
       buildSidebar();
+      showHomePage();
       if (!isAuthenticated()) {
         passwordInput.focus();
       }
