@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ProxyNoxy's Projects</title>
+  <title>ProxyNoxy's Games</title>
   <style>
     * {
       margin: 0;
@@ -527,7 +527,7 @@
   <div id="auth-screen">
     <div id="auth-card">
       <h2>Access required</h2>
-      <p>Enter the password to view the project pages.</p>
+      <p>Enter the password to view the game pages.</p>
 
       <form id="auth-form">
         <label for="password-input">Password</label>
@@ -541,8 +541,8 @@
   <div id="app">
     <nav id="sidebar">
       <div id="sidebar-header">
-        <h1>✦ Projects</h1>
-        <p>All Files</p>
+        <h1>✦ Games</h1>
+        <p>All Games</p>
       </div>
       <div id="sidebar-content">
         <ul id="sidebar-links">
@@ -554,7 +554,7 @@
     <div id="main-container">
       <header id="main-header">
         <div id="main-header-content">
-          <h1 id="page-title">ProxyNoxy's Projects</h1>
+          <h1 id="page-title">ProxyNoxy's Games</h1>
           <p id="page-path">Welcome home</p>
         </div>
 
@@ -566,11 +566,11 @@
 
       <div id="home-page">
         <h2>Welcome to ProxyNoxy</h2>
-        <p>Explore a curated collection of immersive web projects and interactive experiences, all wrapped in a sleek cyberpunk glow.</p>
-        <button class="home-cta" onclick="document.querySelector('#sidebar-links a')?.click()">Explore Projects</button>
+        <p>Explore a curated collection of immersive web games and interactive experiences, all wrapped in a sleek cyberpunk glow.</p>
+        <button class="home-cta" onclick="document.querySelector('#sidebar-links a')?.click()">Explore Games</button>
       </div>
 
-      <iframe id="page-frame" title="Project Preview" style="display: none;"></iframe>
+      <iframe id="page-frame" title="Game Preview" style="display: none;"></iframe>
     </div>
   </div>
 
@@ -636,7 +636,7 @@
     function showHomePage() {
       homePage.style.display = 'flex';
       pageFrame.style.display = 'none';
-      document.getElementById('page-title').textContent = "ProxyNoxy's Projects";
+      document.getElementById('page-title').textContent = "ProxyNoxy's Games";
       document.getElementById('page-path').textContent = 'Welcome home';
       setActiveLink(null);
     }
@@ -686,7 +686,7 @@
       sidebarEl.innerHTML = '';
 
       if (!STATIC_HTML_FILES.length) {
-        sidebarEl.innerHTML = '<li class="status-msg">📭 No HTML pages configured</li>';
+        sidebarEl.innerHTML = '<li class="status-msg">📭 No games configured</li>';
         return;
       }
 
