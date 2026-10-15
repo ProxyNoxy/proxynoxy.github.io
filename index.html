@@ -40,36 +40,66 @@
     }
 
     body {
+      position: relative;
+      isolation: isolate;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif;
       color: var(--text);
       display: flex;
       flex-direction: row;
-      background:
-        radial-gradient(circle at top left, rgba(255, 139, 199, 0.18), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(138, 231, 255, 0.18), transparent 30%),
-        linear-gradient(135deg, #0d1020 0%, #171b38 38%, #232b56 100%);
-      background-size: 200% 200%;
-      animation: softArcadeShift 26s ease-in-out infinite alternate;
+      background: #0d1020;
     }
 
-    @keyframes softArcadeShift {
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(
+          120deg,
+          hsl(0 95% 60%),
+          hsl(35 95% 62%),
+          hsl(70 95% 58%),
+          hsl(120 95% 58%),
+          hsl(175 95% 55%),
+          hsl(220 95% 60%),
+          hsl(270 90% 62%),
+          hsl(315 95% 60%),
+          hsl(360 95% 60%)
+        );
+      background-size: 250% 250%;
+      filter: saturate(1.2) brightness(1.08);
+      animation: spectrumFade 28s ease-in-out infinite alternate;
+      opacity: 0.9;
+    }
+
+    @keyframes spectrumFade {
       0% {
-        background:
-          radial-gradient(circle at top left, rgba(255, 139, 199, 0.18), transparent 28%),
-          radial-gradient(circle at bottom right, rgba(138, 231, 255, 0.18), transparent 30%),
-          linear-gradient(135deg, #0d1020 0%, #171b38 38%, #232b56 100%);
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg) saturate(1.1) brightness(1.08);
+      }
+      25% {
+        background-position: 35% 30%;
+        filter: hue-rotate(80deg) saturate(1.25) brightness(1.12);
       }
       50% {
-        background:
-          radial-gradient(circle at top left, rgba(146, 195, 255, 0.16), transparent 28%),
-          radial-gradient(circle at bottom right, rgba(255, 188, 222, 0.18), transparent 30%),
-          linear-gradient(135deg, #121735 0%, #1b234e 38%, #2e2558 100%);
+        background-position: 100% 50%;
+        filter: hue-rotate(180deg) saturate(1.3) brightness(1.14);
+      }
+      75% {
+        background-position: 60% 80%;
+        filter: hue-rotate(260deg) saturate(1.2) brightness(1.12);
       }
       100% {
-        background:
-          radial-gradient(circle at top left, rgba(255, 184, 110, 0.12), transparent 28%),
-          radial-gradient(circle at bottom right, rgba(138, 231, 255, 0.2), transparent 30%),
-          linear-gradient(135deg, #0f1630 0%, #1d2148 40%, #2c255f 100%);
+        background-position: 0% 50%;
+        filter: hue-rotate(360deg) saturate(1.1) brightness(1.08);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body::before {
+        animation: none;
       }
     }
 
