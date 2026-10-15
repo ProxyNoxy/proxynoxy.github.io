@@ -47,10 +47,11 @@
       color: var(--text);
       display: flex;
       flex-direction: row;
-      background: #0d1020;
+      /* keep the base background dark */
+      background: var(--bg-1);
     }
 
-    /* Animated spectrum overlay for the whole page */
+    /* Animated spectrum overlay for the whole page -- toned down to keep the background dark */
     body::before {
       content: "";
       position: fixed;
@@ -71,9 +72,11 @@
           hsl(360 95% 60%)
         );
       background-size: 250% 250%;
-      filter: saturate(1.2) brightness(1.08);
+      /* make the overlay subtle so the page remains dark */
+      filter: saturate(1.05) brightness(0.28);
+      mix-blend-mode: screen;
       animation: spectrumFade var(--spectrum-duration) ease-in-out infinite alternate;
-      opacity: 0.9;
+      opacity: 0.12; /* reduced from 0.9 to keep the underlying dark background visible */
     }
 
     /* Re-usable spectrum animation for other elements (text & backgrounds) */
@@ -106,7 +109,7 @@
       -webkit-text-fill-color: transparent;
       animation: spectrumFade var(--spectrum-duration) linear infinite;
       /* Add a gentle glow that also shifts with the animation */
-      text-shadow: 0 0 14px rgba(255,255,255,0.08);
+      text-shadow: 0 0 14px rgba(255,255,255,0.04);
     }
 
     @keyframes spectrumFade {
@@ -185,7 +188,7 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      opacity: 0.12;
+      opacity: 0.06; /* reduced so header stays mostly dark */
       mix-blend-mode: screen;
       /* use the reusable spectrum class */
       background-image: linear-gradient(120deg,
@@ -209,7 +212,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 18px rgba(255, 139, 199, 0.26);
+      text-shadow: 0 0 18px rgba(255, 139, 199, 0.12);
       animation: spectrumFade var(--spectrum-duration) linear infinite;
     }
 
@@ -334,7 +337,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 14px rgba(138, 231, 255, 0.22);
+      text-shadow: 0 0 14px rgba(138, 231, 255, 0.12);
       animation: spectrumFade calc(var(--spectrum-duration) * 0.9) linear infinite;
     }
 
@@ -448,7 +451,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-align: center;
-      text-shadow: 0 0 25px rgba(255, 139, 199, 0.18);
+      text-shadow: 0 0 25px rgba(255, 139, 199, 0.12);
       /* make the heading colors slowly move */
       background-size: 300% 300%;
       animation: spectrumFade calc(var(--spectrum-duration) * 1.1) linear infinite;
@@ -521,7 +524,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 18px rgba(255, 139, 199, 0.18);
+      text-shadow: 0 0 18px rgba(255, 139, 199, 0.12);
       background-size: 300% 300%;
       animation: spectrumFade var(--spectrum-duration) linear infinite;
     }
