@@ -39,15 +39,50 @@
       overflow: hidden;
     }
 
+    /* Animated background: cycles through multiple gradient color schemes */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(255, 0, 110, 0.18), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(255, 122, 217, 0.14), transparent 30%),
-        linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 42%, var(--bg-3) 100%);
       color: var(--text);
       display: flex;
       flex-direction: row;
+      /* initial fallback background (kept for very old browsers) */
+      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 42%, var(--bg-3) 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 30s ease-in-out infinite;
+    }
+
+    /* Keyframes define different gradient combinations. The browser will interpolate colors between frames for a smooth loop in modern engines. */
+    @keyframes gradientShift {
+      0% {
+        background:
+          radial-gradient(circle at top left, rgba(255, 0, 110, 0.18), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(255, 122, 217, 0.14), transparent 30%),
+          linear-gradient(135deg, #050816 0%, #0a0f22 42%, #141b35 100%);
+      }
+      25% {
+        background:
+          radial-gradient(circle at top left, rgba(0, 200, 255, 0.16), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(120, 0, 255, 0.14), transparent 30%),
+          linear-gradient(135deg, #002b36 0%, #003b55 42%, #2b1f5b 100%);
+      }
+      50% {
+        background:
+          radial-gradient(circle at top left, rgba(0, 220, 130, 0.14), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(255, 200, 0, 0.12), transparent 30%),
+          linear-gradient(135deg, #041f1f 0%, #0a3a2f 42%, #3b2f1f 100%);
+      }
+      75% {
+        background:
+          radial-gradient(circle at top left, rgba(255, 140, 50, 0.16), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(60, 80, 255, 0.12), transparent 30%),
+          linear-gradient(135deg, #2b0038 0%, #3b084f 42%, #10204f 100%);
+      }
+      100% {
+        background:
+          radial-gradient(circle at top left, rgba(255, 0, 110, 0.18), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(255, 122, 217, 0.14), transparent 30%),
+          linear-gradient(135deg, #050816 0%, #0a0f22 42%, #141b35 100%);
+      }
     }
 
     #app {
@@ -95,6 +130,8 @@
       background-clip: text;
       text-shadow: 0 0 18px rgba(255, 0, 110, 0.28);
     }
+
+    /* Keep rest of CSS unchanged */
 
     #sidebar-header p {
       font-size: 0.82rem;
@@ -635,11 +672,11 @@
     }
 
     function formatLabel(path) {
-      const fileName = path.replace(/^.*\//, '').replace(/\.html$/i, '');
+      const fileName = path.replace(/^.*\\/, '').replace(/\\.html$/i, '');
       return fileName
         .replace(/[-_]/g, ' ')
         .trim()
-        .replace(/\b\w/g, char => char.toUpperCase());
+        .replace(/\\b\\w/g, char => char.toUpperCase());
     }
 
     function showHomePage() {
@@ -705,8 +742,8 @@
         .filter(file => file && file.toLowerCase().endsWith('.html'));
 
       files.sort((a, b) => {
-        const aName = a.replace(/^.*\//, '');
-        const bName = b.replace(/^.*\//, '');
+        const aName = a.replace(/^.*\\//, '');
+        const bName = b.replace(/^.*\\//, '');
         const aFlag = aName.startsWith('🏁');
         const bFlag = bName.startsWith('🏁');
 
