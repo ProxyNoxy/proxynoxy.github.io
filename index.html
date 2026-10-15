@@ -656,7 +656,8 @@
       const pageUrl = `https://${owner.toLowerCase()}.github.io/${path}`;
 
       pageTitle.textContent = formatLabel(path);
-      pagePath.textContent = `${path}`;
+      // Show only the friendly label (no path) in the header
+      pagePath.textContent = formatLabel(path);
       pageFrame.src = pageUrl;
       homePage.style.display = 'none';
       pageFrame.style.display = 'block';
@@ -699,24 +700,38 @@
         return;
       }
 
-      STATIC_HTML_FILES
-        .filter(file => file && file.toLowerCase().endsWith('.html'))
-        .sort((a, b) => a.localeCompare(b))
-        .forEach(file => {
-          const item = document.createElement('li');
-          const link = document.createElement('a');
+      // Sort so flagged files (filename starting with the flag emoji) appear last
+      const files = STATIC_HTML_FILES
+        .filter(file => file && file.toLowerCase().endsWith('.html'));
 
-          link.href = '#';
-          link.dataset.path = file;
-          link.textContent = formatLabel(file);
-          link.addEventListener('click', event => {
-            event.preventDefault();
-            openPage(file);
-          });
+      files.sort((a, b) => {
+        const aName = a.replace(/^.*\//, '');
+        const bName = b.replace(/^.*\//, '');
+        const aFlag = aName.startsWith('🏁');
+        const bFlag = bName.startsWith('🏁');
 
-          item.appendChild(link);
-          sidebarEl.appendChild(item);
+        if (aFlag !== bFlag) {
+          return aFlag ? 1 : -1; // flagged items after unflagged
+        }
+
+        return aName.localeCompare(bName);
+      });
+
+      files.forEach(file => {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+
+        link.href = '#';
+        link.dataset.path = file;
+        link.textContent = formatLabel(file);
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          openPage(file);
         });
+
+        item.appendChild(link);
+        sidebarEl.appendChild(item);
+      });
     }
 
     function setActiveLink(path) {
