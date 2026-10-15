@@ -11,14 +11,671 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>LearnGoose</title>
   <style>
-    /* styles omitted for brevity in this message - unchanged from previous file */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #ff8bc7;
+      --primary-2: #ffc1e3;
+      --primary-3: #8ae7ff;
+      --bg-1: #0d1020;
+      --bg-2: #171b38;
+      --bg-3: #232b56;
+      --panel: rgba(18, 22, 38, 0.66);
+      --panel-strong: rgba(20, 25, 46, 0.8);
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #f4f7ff;
+      --muted: #c4cde8;
+      --soft: #edf4ff;
+      --shadow: rgba(135, 94, 255, 0.28);
+      --spectrum-duration: 28s;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      position: relative;
+      isolation: isolate;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: row;
+      /* keep the base background dark */
+      background: var(--bg-1);
+    }
+
+    /* Animated spectrum overlay for the whole page -- toned down to keep the background dark */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(
+          120deg,
+          hsl(0 95% 60%),
+          hsl(35 95% 62%),
+          hsl(70 95% 58%),
+          hsl(120 95% 58%),
+          hsl(175 95% 55%),
+          hsl(220 95% 60%),
+          hsl(270 90% 62%),
+          hsl(315 95% 60%),
+          hsl(360 95% 60%)
+        );
+      background-size: 250% 250%;
+      /* make the overlay subtle so the page remains dark */
+      filter: saturate(1.05) brightness(0.28);
+      mix-blend-mode: screen;
+      animation: spectrumFade var(--spectrum-duration) ease-in-out infinite alternate;
+      opacity: 0.12; /* reduced from 0.9 to keep the underlying dark background visible */
+    }
+
+    /* Re-usable spectrum animation for other elements (text & backgrounds) */
+    .spectrum-bg {
+      background-image: linear-gradient(120deg,
+        hsl(0 95% 60%),
+        hsl(35 95% 62%),
+        hsl(70 95% 58%),
+        hsl(120 95% 58%),
+        hsl(175 95% 55%),
+        hsl(220 95% 60%),
+        hsl(270 90% 62%),
+        hsl(315 95% 60%),
+        hsl(360 95% 60%));
+      background-size: 250% 250%;
+      animation: spectrumFade var(--spectrum-duration) ease-in-out infinite alternate;
+    }
+
+    .spectrum-text {
+      background-image: linear-gradient(135deg,
+        hsl(0 95% 60%),
+        hsl(35 95% 62%),
+        hsl(70 95% 58%),
+        hsl(120 95% 58%),
+        hsl(175 95% 55%),
+        hsl(220 95% 60%));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
+      /* Add a gentle glow that also shifts with the animation */
+      text-shadow: 0 0 14px rgba(255,255,255,0.04);
+    }
+
+    @keyframes spectrumFade {
+      0% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg) saturate(1.1) brightness(1.08);
+      }
+      25% {
+        background-position: 35% 30%;
+        filter: hue-rotate(80deg) saturate(1.25) brightness(1.12);
+      }
+      50% {
+        background-position: 100% 50%;
+        filter: hue-rotate(180deg) saturate(1.3) brightness(1.14);
+      }
+      75% {
+        background-position: 60% 80%;
+        filter: hue-rotate(260deg) saturate(1.2) brightness(1.12);
+      }
+      100% {
+        background-position: 0% 50%;
+        filter: hue-rotate(360deg) saturate(1.1) brightness(1.08);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body::before {
+        animation: none;
+      }
+      .spectrum-bg,
+      .spectrum-text {
+        animation: none;
+      }
+    }
+
+    #app {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    #app.unlocked {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #sidebar {
+      width: 300px;
+      height: 100vh;
+      background: rgba(13, 17, 30, 0.74);
+      border-right: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 18px 0 36px rgba(7, 9, 20, 0.3);
+      flex-shrink: 0;
+    }
+
+    #sidebar-header {
+      padding: 1.8rem 1.5rem 1.4rem;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 139, 199, 0.12), rgba(138, 231, 255, 0.04));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle animated overlay inside the header */
+    #sidebar-header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.06; /* reduced so header stays mostly dark */
+      mix-blend-mode: screen;
+      /* use the reusable spectrum class */
+      background-image: linear-gradient(120deg,
+        hsl(0 95% 60%),
+        hsl(35 95% 62%),
+        hsl(70 95% 58%),
+        hsl(120 95% 58%),
+        hsl(175 95% 55%),
+        hsl(220 95% 60%));
+      background-size: 200% 200%;
+      animation: spectrumFade calc(var(--spectrum-duration) * 1.2) ease-in-out infinite alternate;
+    }
+
+    #sidebar-header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.45rem;
+      /* animated gradient text */
+      background-image: linear-gradient(135deg, hsl(320 95% 70%), hsl(200 95% 65%), hsl(20 95% 65%));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 18px rgba(255, 139, 199, 0.12);
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
+    }
+
+    #sidebar-header p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    #sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.2rem 0.9rem;
+    }
+
+    #sidebar-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #sidebar-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #sidebar-content::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-3) 100%);
+      border-radius: 999px;
+    }
+
+    #sidebar-links {
+      list-style: none;
+      padding: 0;
+    }
+
+    #sidebar-links li {
+      margin-bottom: 0.7rem;
+    }
+
+    #sidebar-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--soft);
+      font-size: 0.96rem;
+      font-weight: 600;
+      transition: all 0.22s ease;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      word-break: break-word;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    #sidebar-links a::before {
+      content: "✦";
+      font-size: 0.9rem;
+      color: var(--primary-3);
+      flex-shrink: 0;
+      text-shadow: 0 0 12px rgba(138, 231, 255, 0.7);
+    }
+
+    #sidebar-links a:hover {
+      background: rgba(138, 231, 255, 0.08);
+      border-color: rgba(138, 231, 255, 0.18);
+      box-shadow: 0 8px 24px rgba(138, 231, 255, 0.12);
+      color: #fff;
+      transform: translateX(4px);
+    }
+
+    #sidebar-links a.active {
+      background: linear-gradient(135deg, rgba(255, 139, 199, 0.14), rgba(138, 231, 255, 0.08));
+      border-color: rgba(255, 139, 199, 0.32);
+      box-shadow: 0 0 0 1px rgba(255, 139, 199, 0.18), 0 12px 30px rgba(255, 139, 199, 0.14);
+      color: #fff;
+      border-left-color: var(--primary);
+    }
+
+    .status-msg {
+      padding: 1rem 1.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      font-style: italic;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.01);
+    }
+
+    #main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #main-header {
+      padding: 1.4rem 2rem 1.2rem;
+      background: rgba(10, 13, 24, 0.44);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+    }
+
+    #main-header-content h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin: 0;
+      background-image: linear-gradient(135deg, hsl(200 95% 62%), hsl(320 95% 68%), hsl(40 95% 64%));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 14px rgba(138, 231, 255, 0.12);
+      animation: spectrumFade calc(var(--spectrum-duration) * 0.9) linear infinite;
+    }
+
+    #main-header-content p {
+      margin: 0.3rem 0 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .header-btn,
+    #auth-form button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(135deg, rgba(255, 139, 199, 0.2), rgba(138, 231, 255, 0.1));
+      color: var(--text);
+      font-weight: 700;
+      padding: 0.78rem 1.15rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      box-shadow: 0 10px 18px rgba(255, 139, 199, 0.08);
+    }
+
+    /* animated button variant */
+    .header-btn.spectrum {
+      color: #fff;
+      border: none;
+      background-image: linear-gradient(120deg,
+        hsl(320 95% 70%),
+        hsl(200 95% 65%),
+        hsl(40 95% 64%));
+      background-size: 300% 300%;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.24);
+    }
+
+    .header-btn.secondary {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .header-btn:hover,
+    #auth-form button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(138, 231, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    #page-frame {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: linear-gradient(180deg, rgba(7, 10, 18, 0.93), rgba(12, 16, 28, 0.98));
+      overflow: hidden;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.2);
+    }
+
+    #home-page {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 2rem;
+      background:
+        radial-gradient(circle at center, rgba(255, 139, 199, 0.12), transparent 35%),
+        linear-gradient(180deg, rgba(9, 13, 24, 0.15), rgba(9, 13, 24, 0.52));
+      overflow-y: auto;
+      position: relative;
+    }
+
+    #home-page::before {
+      content: "";
+      position: absolute;
+      inset: 8% 15%;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 1px rgba(255, 139, 199, 0.06), 0 30px 80px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      pointer-events: none;
+    }
+
+    #home-page > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    #home-page h2 {
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+      letter-spacing: -0.05em;
+      background-image: linear-gradient(135deg, #ffffff 0%, var(--primary-2) 30%, var(--primary) 60%, var(--primary-3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      text-shadow: 0 0 25px rgba(255, 139, 199, 0.12);
+      /* make the heading colors slowly move */
+      background-size: 300% 300%;
+      animation: spectrumFade calc(var(--spectrum-duration) * 1.1) linear infinite;
+    }
+
+    #home-page p {
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      color: var(--muted);
+      text-align: center;
+      max-width: 680px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    #home-page .home-cta {
+      display: inline-block;
+      padding: 1rem 1.8rem;
+      background-image: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      background-size: 300% 300%;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 16px 36px rgba(255, 139, 199, 0.28), 0 0 25px rgba(138, 231, 255, 0.12);
+      letter-spacing: 0.02em;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
+    }
+
+    #home-page .home-cta:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 20px 45px rgba(255, 139, 199, 0.34), 0 0 30px rgba(138, 231, 255, 0.18);
+    }
+
+    #auth-screen {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, rgba(255, 139, 199, 0.18), rgba(20, 23, 40, 0.92) 40%),
+        linear-gradient(135deg, #0e1224 0%, #171b38 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.25s ease;
+    }
+
+    #auth-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #auth-card {
+      width: min(420px, calc(100vw - 2rem));
+      background: rgba(17, 22, 38, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2), 0 0 50px rgba(138, 231, 255, 0.12);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: 2rem;
+    }
+
+    #auth-card h2 {
+      margin: 0 0 0.4rem;
+      font-size: 1.9rem;
+      background-image: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 18px rgba(255, 139, 199, 0.12);
+      background-size: 300% 300%;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
+    }
+
+    #auth-card p {
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    #auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    #auth-form label {
+      color: var(--soft);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    #auth-form input {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(10, 14, 25, 0.82);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 0.95rem 1rem;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #auth-form input:focus {
+      border-color: rgba(138, 231, 255, 0.46);
+      box-shadow: 0 0 0 3px rgba(138, 231, 255, 0.08), 0 0 20px rgba(138, 231, 255, 0.08);
+    }
+
+    #auth-form button {
+      margin-top: 0.3rem;
+      font-size: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 12px 28px rgba(255, 139, 199, 0.18);
+    }
+
+    #auth-error {
+      min-height: 1.1rem;
+      font-size: 0.85rem;
+      color: #ffbfd8;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    #auth-error.visible {
+      opacity: 1;
+    }
+
+    @media (max-width: 1024px) {
+      #sidebar {
+        width: 250px;
+      }
+
+      #main-header {
+        padding: 1rem 1.5rem;
+      }
+
+      #main-header-content h1 {
+        font-size: 1.45rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      #app {
+        flex-direction: column;
+      }
+
+      #sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      #sidebar-content {
+        max-height: 30vh;
+      }
+
+      #main-container {
+        height: 60vh;
+      }
+
+      #main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      #home-page h2 {
+        font-size: 2.2rem;
+      }
+
+      #home-page p {
+        font-size: 1rem;
+      }
+    }
+
+    .spinner {
+      display: inline-block;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #sidebar-links li {
+      animation: fadeIn 0.28s ease-out forwards;
+    }
+
+    #sidebar-links li:nth-child(1) { animation-delay: 0s; }
+    #sidebar-links li:nth-child(2) { animation-delay: 0.05s; }
+    #sidebar-links li:nth-child(3) { animation-delay: 0.1s; }
+    #sidebar-links li:nth-child(n+4) { animation-delay: 0.15s; }
   </style>
 </head>
 <body>
   <div id="auth-screen">
     <div id="auth-card">
       <h2>Access required</h2>
-      <p>Enter the master password or the visitor password to view the game pages.</p>
+      <p>Enter the password to view the game pages.</p>
 
       <form id="auth-form">
         <label for="password-input">Password</label>
@@ -68,16 +725,8 @@
   <script>
     const owner = 'ProxyNoxy';
     const repo = 'proxynoxy.github.io';
-
-    // Master (persistent) password - unchanged
     const SITE_PASSWORD = 'LearnGooseOnTop';
-
-    // Visitor temporary password (same every day). Change this value if you want a different visitor password.
-    const VISITOR_PASSWORD = 'LearnGooseVisitor';
-
     const AUTH_KEY = 'proxynoxy_authenticated';
-    const AUTH_EXPIRY_KEY = 'proxynoxy_auth_expires_at';
-
     const STATIC_HTML_FILES = [
       'pages/🏁CloudMoon.html',
       'pages/🏁Noahs_Tutoring.html',
@@ -99,30 +748,8 @@
     const homePage = document.getElementById('home-page');
     const pageFrame = document.getElementById('page-frame');
 
-    function getExpiryForNextDay(date = new Date()) {
-      const nextDay = new Date(date);
-      nextDay.setHours(0, 0, 0, 0);
-      nextDay.setDate(nextDay.getDate() + 1);
-      return nextDay.getTime();
-    }
-
-    function getStoredExpiry() {
-      const readValue = localStorage.getItem(AUTH_EXPIRY_KEY);
-      return readValue ? Number(readValue) : 0;
-    }
-
-    // Unlock app. If isMaster is true, create a persistent login (no expiry).
-    // If false, create a visitor login that expires at next midnight.
-    function unlockApp(isMaster = false) {
-      if (isMaster) {
-        localStorage.setItem(AUTH_KEY, 'true');
-        localStorage.removeItem(AUTH_EXPIRY_KEY);
-      } else {
-        const expiry = getExpiryForNextDay();
-        localStorage.setItem(AUTH_KEY, 'true');
-        localStorage.setItem(AUTH_EXPIRY_KEY, String(expiry));
-      }
-
+    function unlockApp() {
+      localStorage.setItem(AUTH_KEY, 'true');
       appEl.classList.add('unlocked');
       authScreen.classList.add('hidden');
       passwordInput.value = '';
@@ -131,29 +758,13 @@
 
     function lockApp() {
       localStorage.removeItem(AUTH_KEY);
-      localStorage.removeItem(AUTH_EXPIRY_KEY);
       appEl.classList.remove('unlocked');
       authScreen.classList.remove('hidden');
       passwordInput.focus();
     }
 
     function isAuthenticated() {
-      if (localStorage.getItem(AUTH_KEY) !== 'true') {
-        return false;
-      }
-
-      const expiresAt = getStoredExpiry();
-      // If there's no expiry stored, treat as master (persistent) login
-      if (!expiresAt) {
-        return true;
-      }
-
-      if (Date.now() > expiresAt) {
-        lockApp();
-        return false;
-      }
-
-      return true;
+      return localStorage.getItem(AUTH_KEY) === 'true';
     }
 
     function showAuthError(message) {
@@ -282,11 +893,7 @@
       }
 
       if (entered === SITE_PASSWORD) {
-        // Master password — persistent login
-        unlockApp(true);
-      } else if (entered === VISITOR_PASSWORD) {
-        // Visitor temporary password — expires next day
-        unlockApp(false);
+        unlockApp();
       } else {
         showAuthError('Incorrect password. Please try again.');
       }
@@ -303,14 +910,11 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-      // If already authenticated and still valid, just show the app UI without modifying storage.
       if (isAuthenticated()) {
-        appEl.classList.add('unlocked');
-        authScreen.classList.add('hidden');
+        unlockApp();
       } else {
         lockApp();
       }
-
       buildSidebar();
       showHomePage();
       if (!isAuthenticated()) {
