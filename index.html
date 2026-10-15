@@ -675,7 +675,7 @@
   <div id="auth-screen">
     <div id="auth-card">
       <h2>Access required</h2>
-      <p>Enter today’s temporary password to view the game pages.</p>
+      <p>Enter the master password or today's temporary visitor password to view the game pages.</p>
 
       <form id="auth-form">
         <label for="password-input">Password</label>
@@ -725,6 +725,7 @@
   <script>
     const owner = 'ProxyNoxy';
     const repo = 'proxynoxy.github.io';
+    const SITE_PASSWORD = 'LearnGooseOnTop';
     const PASSWORD_PREFIX = 'LearnGooseOnTop';
     const AUTH_KEY = 'proxynoxy_authenticated';
     const AUTH_EXPIRY_KEY = 'proxynoxy_auth_expires_at';
@@ -772,11 +773,16 @@
       return readValue ? Number(readValue) : 0;
     }
 
-    function unlockApp() {
-      const now = Date.now();
-      const expiry = getExpiryForNextDay();
-      localStorage.setItem(AUTH_KEY, 'true');
-      localStorage.setItem(AUTH_EXPIRY_KEY, String(expiry));
+    function unlockApp(isMaster = false) {
+      if (isMaster) {
+        localStorage.setItem(AUTH_KEY, 'true');
+        localStorage.removeItem(AUTH_EXPIRY_KEY);
+      } else {
+        const expiry = getExpiryForNextDay();
+        localStorage.setItem(AUTH_KEY, 'true');
+        localStorage.setItem(AUTH_EXPIRY_KEY, String(expiry));
+      }
+
       appEl.classList.add('unlocked');
       authScreen.classList.add('hidden');
       passwordInput.value = '';
@@ -797,7 +803,12 @@
       }
 
       const expiresAt = getStoredExpiry();
-      if (!expiresAt || Date.now() > expiresAt) {
+      // If there's no expiry stored, treat as master (persistent) login
+      if (!expiresAt) {
+        return true;
+      }
+
+      if (Date.now() > expiresAt) {
         lockApp();
         return false;
       }
@@ -931,10 +942,15 @@
       }
 
       const dailyPassword = getDailyPassword();
-      if (entered === dailyPassword) {
-        unlockApp();
+
+      if (entered === SITE_PASSWORD) {
+        // Master password — persistent login
+        unlockApp(true);
+      } else if (entered === dailyPassword) {
+        // Visitor temporary password — expires next day
+        unlockApp(false);
       } else {
-        showAuthError(`Incorrect password. Today's password is: ${dailyPassword}`);
+        showAuthError('Incorrect password. Please try again.');
       }
     });
 
