@@ -31,6 +31,7 @@
       --muted: #c4cde8;
       --soft: #edf4ff;
       --shadow: rgba(135, 94, 255, 0.28);
+      --spectrum-duration: 28s;
     }
 
     html, body {
@@ -49,6 +50,7 @@
       background: #0d1020;
     }
 
+    /* Animated spectrum overlay for the whole page */
     body::before {
       content: "";
       position: fixed;
@@ -70,8 +72,41 @@
         );
       background-size: 250% 250%;
       filter: saturate(1.2) brightness(1.08);
-      animation: spectrumFade 28s ease-in-out infinite alternate;
+      animation: spectrumFade var(--spectrum-duration) ease-in-out infinite alternate;
       opacity: 0.9;
+    }
+
+    /* Re-usable spectrum animation for other elements (text & backgrounds) */
+    .spectrum-bg {
+      background-image: linear-gradient(120deg,
+        hsl(0 95% 60%),
+        hsl(35 95% 62%),
+        hsl(70 95% 58%),
+        hsl(120 95% 58%),
+        hsl(175 95% 55%),
+        hsl(220 95% 60%),
+        hsl(270 90% 62%),
+        hsl(315 95% 60%),
+        hsl(360 95% 60%));
+      background-size: 250% 250%;
+      animation: spectrumFade var(--spectrum-duration) ease-in-out infinite alternate;
+    }
+
+    .spectrum-text {
+      background-image: linear-gradient(135deg,
+        hsl(0 95% 60%),
+        hsl(35 95% 62%),
+        hsl(70 95% 58%),
+        hsl(120 95% 58%),
+        hsl(175 95% 55%),
+        hsl(220 95% 60%));
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
+      /* Add a gentle glow that also shifts with the animation */
+      text-shadow: 0 0 14px rgba(255,255,255,0.08);
     }
 
     @keyframes spectrumFade {
@@ -99,6 +134,10 @@
 
     @media (prefers-reduced-motion: reduce) {
       body::before {
+        animation: none;
+      }
+      .spectrum-bg,
+      .spectrum-text {
         animation: none;
       }
     }
@@ -136,17 +175,42 @@
       border-bottom: 1px solid var(--line);
       background: linear-gradient(180deg, rgba(255, 139, 199, 0.12), rgba(138, 231, 255, 0.04));
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle animated overlay inside the header */
+    #sidebar-header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.12;
+      mix-blend-mode: screen;
+      /* use the reusable spectrum class */
+      background-image: linear-gradient(120deg,
+        hsl(0 95% 60%),
+        hsl(35 95% 62%),
+        hsl(70 95% 58%),
+        hsl(120 95% 58%),
+        hsl(175 95% 55%),
+        hsl(220 95% 60%));
+      background-size: 200% 200%;
+      animation: spectrumFade calc(var(--spectrum-duration) * 1.2) ease-in-out infinite alternate;
     }
 
     #sidebar-header h1 {
       font-size: 1.5rem;
       font-weight: 800;
       margin-bottom: 0.45rem;
-      background: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 55%, var(--primary-3) 100%);
+      /* animated gradient text */
+      background-image: linear-gradient(135deg, hsl(320 95% 70%), hsl(200 95% 65%), hsl(20 95% 65%));
+      background-size: 300% 300%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-shadow: 0 0 18px rgba(255, 139, 199, 0.26);
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
     }
 
     #sidebar-header p {
@@ -265,11 +329,13 @@
       font-size: 1.7rem;
       font-weight: 800;
       margin: 0;
-      background: linear-gradient(135deg, var(--primary-3) 0%, var(--primary) 100%);
+      background-image: linear-gradient(135deg, hsl(200 95% 62%), hsl(320 95% 68%), hsl(40 95% 64%));
+      background-size: 300% 300%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-shadow: 0 0 14px rgba(138, 231, 255, 0.22);
+      animation: spectrumFade calc(var(--spectrum-duration) * 0.9) linear infinite;
     }
 
     #main-header-content p {
@@ -301,6 +367,19 @@
       font-size: 0.9rem;
       white-space: nowrap;
       box-shadow: 0 10px 18px rgba(255, 139, 199, 0.08);
+    }
+
+    /* animated button variant */
+    .header-btn.spectrum {
+      color: #fff;
+      border: none;
+      background-image: linear-gradient(120deg,
+        hsl(320 95% 70%),
+        hsl(200 95% 65%),
+        hsl(40 95% 64%));
+      background-size: 300% 300%;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.24);
     }
 
     .header-btn.secondary {
@@ -364,12 +443,15 @@
       font-weight: 900;
       margin-bottom: 1rem;
       letter-spacing: -0.05em;
-      background: linear-gradient(135deg, #ffffff 0%, var(--primary-2) 30%, var(--primary) 60%, var(--primary-3) 100%);
+      background-image: linear-gradient(135deg, #ffffff 0%, var(--primary-2) 30%, var(--primary) 60%, var(--primary-3) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-align: center;
       text-shadow: 0 0 25px rgba(255, 139, 199, 0.18);
+      /* make the heading colors slowly move */
+      background-size: 300% 300%;
+      animation: spectrumFade calc(var(--spectrum-duration) * 1.1) linear infinite;
     }
 
     #home-page p {
@@ -384,7 +466,8 @@
     #home-page .home-cta {
       display: inline-block;
       padding: 1rem 1.8rem;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      background-image: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      background-size: 300% 300%;
       color: white;
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 14px;
@@ -394,6 +477,7 @@
       transition: all 0.25s ease;
       box-shadow: 0 16px 36px rgba(255, 139, 199, 0.28), 0 0 25px rgba(138, 231, 255, 0.12);
       letter-spacing: 0.02em;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
     }
 
     #home-page .home-cta:hover {
@@ -433,11 +517,13 @@
     #auth-card h2 {
       margin: 0 0 0.4rem;
       font-size: 1.9rem;
-      background: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
+      background-image: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-shadow: 0 0 18px rgba(255, 139, 199, 0.18);
+      background-size: 300% 300%;
+      animation: spectrumFade var(--spectrum-duration) linear infinite;
     }
 
     #auth-card p {
