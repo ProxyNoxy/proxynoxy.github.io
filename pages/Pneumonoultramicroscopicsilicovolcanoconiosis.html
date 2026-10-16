@@ -1,0 +1,264 @@
+<html lang="en-us"><head>
+<base href="https://cdn.jsdelivr.net/gh/NaoTomori1/yukios-games@main/html/">
+<script>
+(function() {
+  try {
+    const _rs = history.replaceState.bind(history);
+    const _ps = history.pushState.bind(history);
+    history.replaceState = function(s,t,u){ try{ return _rs(s,t,u);}catch(e){ if(String(e).includes("SecurityError")&&String(u||"").startsWith("blob:")) return; throw e; } };
+    history.pushState = function(s,t,u){ try{ return _ps(s,t,u);}catch(e){ if(String(e).includes("SecurityError")&&String(u||"").startsWith("blob:")) return; throw e; } };
+  } catch {}
+  const ROOT_BASE = "https://cdn.jsdelivr.net/gh/NaoTomori1/yukios-games@main/";
+  const ASSET_DIR_BASE = "https://cdn.jsdelivr.net/gh/NaoTomori1/yukios-games@main/html/";
+  const JSDELIVR_GH_BASE = "https://cdn.jsdelivr.net/gh/";
+  const STATICALLY_GH_BASE = "https://cdn.jsdelivr.net/gh/";
+
+  function resolve(url) {
+    if (typeof url !== 'string' || !url) return url;
+    if (url.startsWith('blob:') || url.startsWith('data:') || url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) return url;
+    let p = url;
+    if (p.startsWith('/')) {
+      p = p.slice(1);
+      if (p.startsWith('next/')) return ASSET_DIR_BASE + p;
+      if (p.startsWith('static/games/')) p = p.replace('static/games/', '');
+      return ROOT_BASE + p;
+    }
+    return ASSET_DIR_BASE + url;
+  }
+
+  function postNavigate(url) {
+    try { parent.postMessage({ __yukios: 'navigate', url }, '*'); } catch {}
+  }
+
+  const createElement = document.createElement.bind(document);
+  document.createElement = function(tag) {
+    const el = createElement(tag);
+    const tagName = tag.toLowerCase();
+    if (tagName === 'script') {
+      let src = '';
+      Object.defineProperty(el, 'src', {
+        get() { return src; },
+        set(val) {
+          src = resolve(val);
+        },
+        configurable: true
+      });
+    } else if (tagName === 'iframe' || tagName === 'frame') {
+      Object.defineProperty(el, 'src', {
+        get() { return el.getAttribute('src'); },
+        set(val) { el.setAttribute('src', resolve(val)); },
+        configurable: true
+      });
+    }
+    return el;
+  };
+
+  const setAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name, value) {
+    const tagName = this.tagName.toLowerCase();
+    const attrName = name.toLowerCase();
+    if ((tagName === 'iframe' || tagName === 'frame' || tagName === 'script' || tagName === 'img') && attrName === 'src') {
+      value = resolve(value);
+    } else if ((tagName === 'link' || tagName === 'a') && attrName === 'href') {
+      value = resolve(value);
+    }
+    return setAttribute.call(this, name, value);
+  };
+
+  document.addEventListener('click', function(e) {
+    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    const rawHref = a.getAttribute('href');
+    if (!rawHref || rawHref[0] === '#' || /^javascript:/i.test(rawHref)) return;
+    if (typeof url === 'string' && (url.startsWith(JSDELIVR_GH_BASE) || url.startsWith(STATICALLY_GH_BASE) || url.startsWith('blob:'))) {
+      e.preventDefault();
+      postNavigate(url);
+    }
+  }, true);
+
+  document.addEventListener('submit', function(e) {
+    const form = e.target;
+    if (!form || !form.getAttribute) return;
+    const action = form.getAttribute('action') || document.baseURI;
+    let url = null;
+    try { url = new URL(action, document.baseURI).href; } catch { return; }
+    if (typeof url === 'string' && (url.startsWith(JSDELIVR_GH_BASE) || url.startsWith(STATICALLY_GH_BASE) || url.startsWith('blob:'))) {
+      e.preventDefault();
+      postNavigate(url);
+    }
+  }, true);
+})();
+</script><script>try{(function(){var u="https://cdn.jsdelivr.net/gh/NaoTomori1/yukios-games@main/html/pneumo.html";try{Object.defineProperty(document,"URL",{configurable:true,get:function(){return u;}});}catch(e){}})();}catch(e){}</script>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>pneumonoultramicroscopicsilicovolcanoconiosis</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0a0a0a;
+        color: #fff;
+        font-family: "Segoe UI", Roboto, sans-serif;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+      }
+
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0a0a0a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        transition: opacity 0.5s;
+      }
+
+      #progress-container {
+        width: 250px;
+        height: 2px;
+        background: #222;
+        margin-top: 20px;
+        overflow: hidden;
+      }
+
+      #progress-bar {
+        width: 0%;
+        height: 100%;
+        background: #fff;
+        transition: width 0.2s;
+      }
+
+      #loading-text {
+        font-size: 0.8rem;
+        font-weight: 400;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0.8;
+      }
+
+      #fs-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 10px;
+        letter-spacing: 1px;
+        z-index: 20;
+        border-radius: 2px;
+        transition: 0.3s;
+      }
+
+      #fs-btn:hover {
+        background: #fff;
+        color: #000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+    <div id="loading">
+      <div id="loading-text">loading 40%</div>
+      <div id="progress-container">
+        <div id="progress-bar" style="width: 40%;"></div>
+      </div>
+    </div>
+    <button id="fs-btn">FULLSCREEN</button>
+    <script>
+      const BASE = "https://cdn.jsdelivr.net/gh/Reeyuki/Pneumo@main/";
+      const ASSETS = {
+        "Build/,.data": 2,
+        "Build/,.wasm": 2,
+        "Build/,.framework.js": 1,
+        "Build/,.loader.js": 1,
+      };
+      const canvas = document.querySelector("#canvas");
+      const loading = document.querySelector("#loading");
+      const loadingText = document.querySelector("#loading-text");
+      const progressBar = document.querySelector("#progress-bar");
+      const fsBtn = document.querySelector("#fs-btn");
+      let unityInst = null;
+      async function fetchAsset(path, count) {
+        const chunks = [];
+        for (let i = 0; i < count; i++) {
+          const url =
+            BASE + path + (count > 1 ? i.toString().padStart(2, "0") : "");
+          chunks.push(
+            fetch(url).then((r) => {
+              if (!r.ok) throw new Error("Load failed: " + url);
+              return r.arrayBuffer();
+            }),
+          );
+        }
+        const parts = await Promise.all(chunks);
+        const type = path.endsWith(".js")
+          ? "application/javascript"
+          : "application/octet-stream";
+        return new Blob(parts, { type });
+      }
+      async function start() {
+        const keys = Object.keys(ASSETS);
+        const total = keys.length;
+        let loadedCount = 0;
+        const results = {};
+        const update = (p) => {
+          const pct = Math.round(p * 100);
+          loadingText.textContent = `loading ${pct}%`;
+          progressBar.style.width = `${pct}%`;
+        };
+        await Promise.all(
+          keys.map(async (key) => {
+            results[key] = await fetchAsset(key, ASSETS[key]);
+            loadedCount++;
+            update((loadedCount / total) * 0.4);
+          }),
+        );
+        const config = {
+          dataUrl: URL.createObjectURL(results["Build/,.data"]),
+          frameworkUrl: URL.createObjectURL(results["Build/,.framework.js"]),
+          codeUrl: URL.createObjectURL(results["Build/,.wasm"]),
+          streamingAssetsUrl: "https://cdn.jsdelivr.net/gh/NaoTomori1/yukios-games@main/html/StreamingAssets",
+          companyName: "SadColoredStudios",
+          productName: "pneumonoultramicroscopicsilicovolcanoconiosis",
+          productVersion: "2.0.0",
+        };
+        const script = document.createElement("script");
+        script.src = URL.createObjectURL(results["Build/,.loader.js"]);
+        script.onload = () => {
+          createUnityInstance(canvas, config, (p) => {
+            update(0.4 + p * 0.6);
+          }).then((i) => {
+            unityInst = i;
+            loading.style.opacity = "0";
+            setTimeout(() => (loading.style.display = "none"), 500);
+          });
+        };
+        document.body.appendChild(script);
+      }
+      fsBtn.onclick = () => {
+        if (unityInst) unityInst.SetFullscreen(1);
+        else if (canvas.requestFullscreen) canvas.requestFullscreen();
+      };
+      start();
+    </script>
+  
+
+<script></script></body></html>
